@@ -1,0 +1,16 @@
+{
+  "compilerOptions": {
+    "jsx": "react-native",
+    /* Completeness */
+    "skipLibCheck": true,   /* Skip type checking all .d.ts files. */
+    /* 配置基础地址 */
+    "baseUrl": ".",
+    /* 配置路径别名 */ 
+    "paths": {
+      "*": ["src/*"],
+    } 
+  },
+  "extends": "expo/tsconfig.base",
+  "include": ["src", "App.js"],
+  "exclude": ["node_modules"]
+}
