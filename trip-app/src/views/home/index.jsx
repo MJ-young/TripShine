@@ -1,9 +1,15 @@
 import { StyleSheet, Image, View, Button } from "react-native";
+import TitleBar from "./components/TitleBar"
+import Card from "../card/Card"
+
 
 export default function Home({ navigation }) {
   return (
     <View style={styles.container}>
-      <Image
+      <TitleBar />
+      <Card></Card>
+
+      {/* <Image
         source={require("@/assets/splash.png")}
         style={{ width: 200, height: 200 }}
       />
@@ -12,7 +18,7 @@ export default function Home({ navigation }) {
           title="Go to User"
           onPress={() => navigation.navigate("User")}
         />
-      </View>
+      </View> */}
     </View>
   );
 }
