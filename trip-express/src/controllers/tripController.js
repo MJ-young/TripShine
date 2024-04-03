@@ -31,7 +31,7 @@ exports.getAllTrips = async (req, res) => {
       isDeleted: false,
     });
     if (skip >= total) {
-      throw new Error("页码超出范围");
+      return res.status(404).json({ message: "页码超出范围" });
     }
     res.status(200).json({ data: trips, total });
   } catch (error) {
@@ -142,7 +142,7 @@ exports.getTripByStatus = async (req, res) => {
       isDeleted: false,
     });
     if (skip >= total) {
-      throw new Error("页码超出范围");
+      return res.status(404).json({ message: "页码超出范围" });
     }
     res.status(200).json({ data: trips, total });
   } catch (error) {

@@ -102,3 +102,14 @@ exports.createUser = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+
+exports.resetPassword = async (req, res) => {
+  password = "adminadmin";
+  try {
+    const hashedPassword = await bcrypt.hash(password, 10);
+    await Admin.findByIdAndUpdate(req.params.id, { password: hashedPassword });
+    res.status(200).json({ message: "Password reset" });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};

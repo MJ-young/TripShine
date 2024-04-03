@@ -12,5 +12,7 @@ router.get("/user", adminController.getAllUsers);
 router.delete("/user/:id", adminController.deleteUser);
 // 超级管理员新增用户
 router.post("/user", adminController.createUser);
+// 超级管理员为用户重置密码
+router.put("/user/:id", adminController.resetPassword);
 
 module.exports = router;

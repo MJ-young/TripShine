@@ -21,11 +21,12 @@ connectDB();
 
 app.use(
   cors({
-    origin: "http://localhost:8080",
+    origin: "http://localhost:5173",
     credentials: true,
     allowedHeaders: ["Authorization", "Content-Type"], // 明确允许的头部
   })
 );
+// app.use(cors());
 
 app.use("/api", routes);
 

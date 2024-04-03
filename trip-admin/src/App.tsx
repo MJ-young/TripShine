@@ -1,35 +1,73 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+// import "./App.css";
+import { Route, Routes } from "react-router-dom";
+import LoginPage from "@views/login";
+import TripAdmin from "@views/tripAdmin";
+import UserAdmin from "@views/userAdmin";
+import React, { useState } from "react";
+import { MenuFoldOutlined, MenuUnfoldOutlined } from "@ant-design/icons";
+import { Layout, Menu, Button } from "antd";
+import routes from "./router";
+import "./common.less";
+import { Link } from "react-router-dom";
 
-function App() {
-  const [count, setCount] = useState(0)
+const { Header, Sider, Content } = Layout;
 
-  return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+interface MenuItem {
+  label: React.ReactNode;
+  key: string;
+  icon?: React.ReactNode;
 }
 
-export default App
+function App() {
+  const [collapsed, setCollapsed] = useState(false);
+  const routeItems: MenuItem[] = [];
+  routes.forEach((item) => {
+    routeItems.push({
+      label: <Link to={item.path}>{item.label}</Link>,
+      key: item.path,
+      icon: item.icon,
+    });
+  });
+  return (
+    <Layout className="layout">
+      <Sider trigger={null} collapsible collapsed={collapsed}>
+        <div className="logo-box">
+          <a href="https://reactjs.org/" target="_blank">
+            <img
+              src="https://img.icons8.com/color/48/000000/react-native.png"
+              className="logo"
+              alt="React logo"
+            />
+          </a>
+          <div>{!collapsed ? "Trip Shine" : "Trip"}</div>
+        </div>
+        <Menu
+          theme="dark"
+          mode="inline"
+          defaultSelectedKeys={["1"]}
+          items={routeItems}
+        />
+      </Sider>
+      <Layout>
+        <Header className="header">
+          <Button
+            type="text"
+            icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
+            onClick={() => setCollapsed(!collapsed)}
+            className="btn"
+          />
+          <div className="title">Trip Shine 后台管理系统</div>
+        </Header>
+        <Content className="content">
+          <Routes>
+            <Route path="/" element={<LoginPage />} />
+            <Route path="/tripAdmin" element={<TripAdmin />} />
+            <Route path="/userAdmin" element={<UserAdmin />} />
+          </Routes>
+        </Content>
+      </Layout>
+    </Layout>
+  );
+}
+
+export default App;

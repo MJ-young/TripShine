@@ -1,0 +1,49 @@
+// 变量
+@colorBgContainer: #f0f2f5;
+@borderRadiusLG: 16px;
+@font-size-lg: 30px;
+@font-size-md: 24px;
+// 属性
+@bg: background-color;
+.logo-box {
+    text-align: center;
+    padding: 20px;
+    color: @colorBgContainer;
+    font-size: @font-size-md;
+    overflow: hidden;
+    .logo {
+        width: 50px;
+        height: 50px;
+    }
+}
+.layout {
+    height: 100vh;
+    overflow: hidden;
+    @{bg}: @colorBgContainer;
+}
+.header {
+        padding: 5px;
+        @{bg}: white;
+        display: flex;
+        .title {
+            font-size: @font-size-md;
+            font-weight: bold;
+            color: cornflowerblue;
+            margin-left: 20px;
+        }
+}
+
+.content {
+    margin: 24px 16px;
+    padding: 20px;
+    min-height: 280px;
+    @{bg}: white;
+    border-radius: @borderRadiusLG;
+    overflow: auto;
+}
+
+.btn {
+    font-size: 16px;
+    height: 64px;
+    width: 64px;
+}
