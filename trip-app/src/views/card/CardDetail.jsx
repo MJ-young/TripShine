@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { View, Text, Image, StyleSheet, TouchableOpacity } from "react-native";
 import Swiper from "react-native-swiper";
-import icon_share from "@/assets/share.png";
+import icon_share from "@/assets/icon_share.png";
 
 const CardDetail = ({ route }) => {
   console.log(route);

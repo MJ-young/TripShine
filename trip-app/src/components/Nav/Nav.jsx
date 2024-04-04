@@ -29,8 +29,19 @@ function ListStackScreen() {
 }
 
 export default function Nav() {
+
   return (
     <Tab.Navigator screenOptions={{ tabBarActiveTintColor: "#222222" }}>
+      <Tab.Screen
+        name="User"
+        component={User}
+        options={{
+          title: "User",
+          tabBarIcon: ({ color, size }) => (
+            <MaterialCommunityIcons name="account" color={color} size={size} />
+          ),
+        }}
+      />
       <Tab.Screen
         name="Home"
         component={ListStackScreen}
@@ -54,16 +65,7 @@ export default function Nav() {
           ),
         }}
       />
-      <Tab.Screen
-        name="User"
-        component={User}
-        options={{
-          title: "User",
-          tabBarIcon: ({ color, size }) => (
-            <MaterialCommunityIcons name="account" color={color} size={size} />
-          ),
-        }}
-      />
+
     </Tab.Navigator>
   );
 }

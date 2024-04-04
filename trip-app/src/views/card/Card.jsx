@@ -1,9 +1,9 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
   Image,
-  FlatList,
+  ScrollView,
   StyleSheet,
   Dimensions,
   TouchableOpacity,
@@ -12,6 +12,7 @@ import { useNavigation } from "@react-navigation/native";
 // import Share from 'react-native-share';
 
 const { width } = Dimensions.get("window");
+const COLUMN_COUNT = 2;
 
 const data = [
   {
@@ -97,32 +98,55 @@ const Card = ({ title, image, authorName, authorAvatar, onPress }) => (
       <Text style={styles.authorName}>{authorName}</Text>
     </View>
   </TouchableOpacity>
+
 );
 
 const WaterfallList = () => {
   const navigation = useNavigation();
+  const [columns, setColumns] = useState(Array.from({ length: COLUMN_COUNT }, () => []));
+
+  useEffect(() => {
+    arrangeItems();
+  }, []);
+
+  const arrangeItems = () => {
+    const newColumns = Array.from({ length: COLUMN_COUNT }, () => []);
+    let columnHeights = Array.from({ length: COLUMN_COUNT }, () => 0);
+
+    data.forEach((item) => {
+      const minHeightIndex = columnHeights.indexOf(Math.min(...columnHeights));
+      newColumns[minHeightIndex].push(item);
+      const imageHeight = width / 2; // Assuming images have equal width and height for simplicity
+      columnHeights[minHeightIndex] += imageHeight; // Update the column height
+    });
+
+    setColumns(newColumns);
+  };
+
   const handleCardPress = (item) => {
     console.log(item);
     navigation.push("Detail", item);
   };
+
   return (
-    <View style={styles.container}>
-      <FlatList
-        data={data}
-        renderItem={({ item }) => (
-          <Card
-            title={item.title}
-            image={item.images[0]}
-            authorName={item.authorName}
-            authorAvatar={item.authorAvatar}
-            onPress={() => handleCardPress(item)}
-          />
-        )}
-        keyExtractor={(item) => item.id.toString()}
-        numColumns={2}
-        contentContainerStyle={styles.listContent}
-      />
-    </View>
+    <ScrollView style={styles.container}>
+      <View style={styles.columnsContainer}>
+        {columns.map((column, index) => (
+          <View key={index} style={styles.column}>
+            {column.map((item) => (
+              <Card
+                key={item.id}
+                title={item.title}
+                image={item.images[0]}
+                authorName={item.authorName}
+                authorAvatar={item.authorAvatar}
+                onPress={() => handleCardPress(item)}
+              />
+            ))}
+          </View>
+        ))}
+      </View>
+    </ScrollView>
   );
 };
 
@@ -130,13 +154,18 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
-  listContent: {
-    paddingHorizontal: 8,
-    paddingTop: 8,
+  columnsContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    // paddingHorizontal: 8,
+  },
+  column: {
+    flex: 1,
+    marginLeft: 4,
+    marginRight: 4,
   },
   card: {
-    flex: 1,
-    margin: 8,
+    marginBottom: 16,
     borderRadius: 8,
     backgroundColor: "#fff",
     shadowColor: "#000",
@@ -144,11 +173,10 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 4,
     elevation: 5,
-    width: (width - 32) / 2,
   },
   image: {
     width: "100%",
-    height: width * 0.5 - 24, // 卡片高度自适应屏幕宽度
+    height: width / 2, // Assuming images have equal width and height for simplicity
     borderTopLeftRadius: 8,
     borderTopRightRadius: 8,
     resizeMode: "cover",
@@ -174,5 +202,6 @@ const styles = StyleSheet.create({
     fontSize: 14,
   },
 });
+
 
 export default WaterfallList;
