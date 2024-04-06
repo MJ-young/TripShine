@@ -5,8 +5,9 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import Home from "@views/home/index";
 import User from "@views/user/index";
-import Publish from "@views/publish/index";
+import CardPublish from "@views/publish/index";
 import CardDetail from "@views/card/CardDetail";
+import Login from "@views/login/index";
 
 import icon_tab_publish from "@/assets/icon_tab_publish.png";
 
@@ -24,6 +25,15 @@ function ListStackScreen() {
         }}
       ></ListStack.Screen>
       <ListStack.Screen name="Detail" component={CardDetail}></ListStack.Screen>
+      <ListStack.Screen
+        name="User"
+        component={User}
+        options={{
+          title: "User",
+        }}
+      ></ListStack.Screen>
+      <ListStack.Screen name="CardPublish" component={CardPublish}></ListStack.Screen>
+
     </ListStack.Navigator>
   );
 }
@@ -32,16 +42,6 @@ export default function Nav() {
 
   return (
     <Tab.Navigator screenOptions={{ tabBarActiveTintColor: "#222222" }}>
-      <Tab.Screen
-        name="User"
-        component={User}
-        options={{
-          title: "User",
-          tabBarIcon: ({ color, size }) => (
-            <MaterialCommunityIcons name="account" color={color} size={size} />
-          ),
-        }}
-      />
       <Tab.Screen
         name="Home"
         component={ListStackScreen}
@@ -53,8 +53,8 @@ export default function Nav() {
         }}
       />
       <Tab.Screen
-        name="Publish"
-        component={Publish}
+        name="CardPublish"
+        component={CardPublish}
         options={{
           title: "发布",
           tabBarIcon: ({ size }) => (
@@ -62,6 +62,26 @@ export default function Nav() {
               source={icon_tab_publish}
               style={{ width: size, height: size }}
             />
+          ),
+        }}
+      />
+      <Tab.Screen
+        name="User"
+        component={User}
+        options={{
+          title: "User",
+          tabBarIcon: ({ color, size }) => (
+            <MaterialCommunityIcons name="account" color={color} size={size} />
+          ),
+        }}
+      />
+      <Tab.Screen
+        name="Login"
+        component={Login}
+        options={{
+          title: "登录",
+          tabBarIcon: ({ color, size }) => (
+            <MaterialCommunityIcons name="login" color={color} size={size} />
           ),
         }}
       />

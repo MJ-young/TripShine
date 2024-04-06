@@ -157,7 +157,6 @@ const styles = StyleSheet.create({
   columnsContainer: {
     flexDirection: "row",
     justifyContent: "space-between",
-    // paddingHorizontal: 8,
   },
   column: {
     flex: 1,
@@ -202,6 +201,5 @@ const styles = StyleSheet.create({
     fontSize: 14,
   },
 });
-
 
 export default WaterfallList;

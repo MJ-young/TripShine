@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useCallback, useRef } from "react";
 import { StyleSheet, View, ScrollView, Text, TouchableOpacity, Image, RefreshControl } from "react-native";
+import { useNavigation } from "@react-navigation/native";
 // import SideMenu, { SideMenuRef } from "./components/SideMenu"
 import Empty from "../../components/Empty";
 
@@ -18,6 +19,86 @@ const EMPTY_CONFIG = [
   { icon: icon_no_list, tips: "快去发布今日的好心情吧～" },
 ]
 
+const store = {
+  "info": {
+    "infoAcceptCount": 3,
+    "infoReviewCount": 2,
+    "infoFailedCount": 2,
+  },
+  "acceptedList": [
+    {
+      id: 1,
+      title: '列表流是什么？',
+      content: ' 一种以文字信息为主导的功能布局形式，主要以文字+图片、文字+图标形式出现的',
+      images: [
+        "https://img2.baidu.com/it/u=1028011339,1319212411&fm=253&fmt=auto&app=138&f=JPEG?w=500&h=313",
+        "https://img0.baidu.com/it/u=1500348864,197010116&fm=253&fmt=auto?w=1422&h=800",],
+    },
+    {
+      id: 2,
+      title: '瀑布流是什么？',
+      content: '瀑布流是“瀑布流式布局”的简称，因滑动时会像瀑布一样“飞流直下”“源源不断”，故而得名。是一种以图片信息为主导的页面布局形式，主要以图片+文字形式出现',
+      images: [
+        'https://th.bing.com/th/id/R.2a6d9ad38dd2ec831d3fb01f11e30d82?rik=lPLWAVWvZHZxDA&riu=http%3a%2f%2fseopic.699pic.com%2fphoto%2f40054%2f1002.jpg_wh1200.jpg&ehk=NxURVbGtLSDFkRiXqySb8Nsa3KV6U41BbFcI0zZg2%2fw%3d&risl=&pid=ImgRaw&r=0',
+        'https://pic.sucaibar.com/pic/201611/24/c9bc97f432.jpg'],
+    },
+    {
+      id: 3,
+      title: 'N皇后问题',
+      content: '八皇后问题（英文：Eight queens），是由国际西洋棋棋手马克斯·贝瑟尔于1848年提出的问题，是回溯算法的典型案例。问题表述为：在8×8格的国际象棋上摆放8个皇后，使其不能互相攻击，即任意两个皇后都不能处于同一行、同一列或同一斜线上，问有多少种摆法。高斯认为有76种方案。1854年在柏林的象棋杂志上不同的作者发表了40种不同的解，后来有人用图论的方法解出92种结果。如果经过±90度、±180度旋转，和对角线对称变换的摆法看成一类，共有42类。计算机发明后，有多种计算机语言可以编程解决此问题。',
+      images: [
+        'https://www.hello-algo.com/chapter_backtracking/n_queens_problem.assets/solution_4_queens.png',
+        'https://pic.sucaibar.com/pic/201611/24/c9bc97f432.jpg'],
+    },
+  ],
+  "reviewingList": [
+    {
+      id: 1,
+      title: "南京真美",
+      content:
+        "南京真美南京真美南京真美南京真美南京真美南京真美南京真美南京真美南京真美",
+      images: [
+        "https://img2.baidu.com/it/u=1028011339,1319212411&fm=253&fmt=auto&app=138&f=JPEG?w=500&h=313",
+        "https://img0.baidu.com/it/u=1500348864,197010116&fm=253&fmt=auto?w=1422&h=800",
+      ]
+    },
+    {
+      id: 2,
+      title: "三天两碗旅游攻略三天两碗旅游攻略三天两碗旅游攻略三天两碗旅游攻略三天两碗旅游攻略三天两碗旅游攻略三天两碗旅游攻略三天两碗旅游攻略三天两碗旅游攻略",
+      content:
+        "南京真美南京真美南京真美南京真美南京真美南京真美南京真美南京真美南京真美",
+      images: [
+        "https://img2.baidu.com/it/u=1028011339,1319212411&fm=253&fmt=auto&app=138&f=JPEG?w=500&h=313",
+        "https://img0.baidu.com/it/u=1500348864,197010116&fm=253&fmt=auto?w=1422&h=800",
+      ]
+    },
+  ],
+  "failedList": [
+    {
+      id: 1,
+      title: '卡片流是什么？',
+      content: '卡片流 列表流的升级版，形式多样 特点——多变、聚焦',
+      images: [
+        'https://pic.sucaibar.com/pic/201611/24/c9bc97f432.jpg',
+        'https://th.bing.com/th/id/OIP.0_NEV1BFaG8yqw8RFHrZGgHaLA?rs=1&pid=ImgDetMain',
+      ],
+    },
+    {
+      id: 2,
+      title: '瀑布流是什么？',
+      content: '瀑布流是“瀑布流式布局”的简称，因滑动时会像瀑布一样“飞流直下”“源源不断”，故而得名。是一种以图片信息为主导的页面布局形式，主要以图片+文字形式出现',
+      images: [
+        'https://th.bing.com/th/id/R.2a6d9ad38dd2ec831d3fb01f11e30d82?rik=lPLWAVWvZHZxDA&riu=http%3a%2f%2fseopic.699pic.com%2fphoto%2f40054%2f1002.jpg_wh1200.jpg&ehk=NxURVbGtLSDFkRiXqySb8Nsa3KV6U41BbFcI0zZg2%2fw%3d&risl=&pid=ImgRaw&r=0',
+        'https://pic.sucaibar.com/pic/201611/24/c9bc97f432.jpg'],
+    },
+  ]
+}
+
+const userInfo = {
+  "avatar": icon_avatar,
+  "nickName": "瓦吉吉哇",
+  "desc": "我正在努力创作中......"
+}
 
 export default function User() {
   const [bgImgHeight, setBgImgHeight] = useState(180);
@@ -66,8 +147,8 @@ export default function User() {
     )
   }
   const renderInfo = () => {
-    // const {avatar, nickName, redBookId, desc, sex} = userInfo
-    // const {info} = store
+    const { avatar, nickName, desc } = userInfo
+    const { info } = store
     const styles = StyleSheet.create({
       avatarLayout: {
         width: "100%",
@@ -160,29 +241,28 @@ export default function User() {
     return (
       <View onLayout={(e) => {
         const { height } = e.nativeEvent.layout;
-        console.log("2222222", height);
         setBgImgHeight(height);
       }}>
         <View style={styles.avatarLayout}>
-          <Image style={styles.avatarImg} source={icon_avatar} />
+          <Image style={styles.avatarImg} source={avatar} />
           <Image style={styles.addImg} source={icon_add} />
           <View style={styles.nameLayout}>
-            <Text style={styles.nameTxt}>瓦吉吉哇</Text>
-            <Text style={styles.descTxt}>我正在努力创作中......</Text>
+            <Text style={styles.nameTxt}>{nickName}</Text>
+            <Text style={styles.descTxt}>{desc}</Text>
           </View>
         </View>
 
         <View style={styles.infoLayout}>
           <View style={styles.infoItem}>
-            <Text style={styles.infoValue}>13</Text>
+            <Text style={styles.infoValue}>{info.infoAcceptCount}</Text>
             <Text style={styles.infoLabel}>已发布</Text>
           </View>
           <View style={styles.infoItem}>
-            <Text style={styles.infoValue}>12</Text>
+            <Text style={styles.infoValue}>{info.infoReviewCount}</Text>
             <Text style={styles.infoLabel}>待审核</Text>
           </View>
           <View style={styles.infoItem}>
-            <Text style={styles.infoValue}>14</Text>
+            <Text style={styles.infoValue}>{info.infoFailedCount}</Text>
             <Text style={styles.infoLabel}>未通过</Text>
           </View>
 
@@ -281,34 +361,48 @@ export default function User() {
     )
   }
   const renderList = () => {
-    // const {
-    //   noteList, collectionList, favorateList,
-    // } = store
-    // const currentList = [noteList, collectionList, favorateList][tabIndex]
-    // const currentList = [][tabIndex];
-    const currentList = [
-      {
-        id: 1,
-        title: '列表流是什么？',
-        content: ' 一种以文字信息为主导的功能布局形式，主要以文字+图片、文字+图标形式出现的',
-        image: 'https://pic.sucaibar.com/pic/201611/24/c9bc97f432.jpg',
-      },
-      {
-        id: 2,
-        title: '瀑布流是什么？',
-        content: '瀑布流是“瀑布流式布局”的简称，因滑动时会像瀑布一样“飞流直下”“源源不断”，故而得名。是一种以图片信息为主导的页面布局形式，主要以图片+文字形式出现',
-        image: 'https://th.bing.com/th/id/R.2a6d9ad38dd2ec831d3fb01f11e30d82?rik=lPLWAVWvZHZxDA&riu=http%3a%2f%2fseopic.699pic.com%2fphoto%2f40054%2f1002.jpg_wh1200.jpg&ehk=NxURVbGtLSDFkRiXqySb8Nsa3KV6U41BbFcI0zZg2%2fw%3d&risl=&pid=ImgRaw&r=0',
-      },
-      {
-        id: 3,
-        title: '卡片流是什么？',
-        content: '卡片流 列表流的升级版，形式多样 特点——多变、聚焦',
-        image: 'https://th.bing.com/th/id/OIP.0_NEV1BFaG8yqw8RFHrZGgHaLA?rs=1&pid=ImgDetMain',
-      },
-    ];
+    const navigation = useNavigation();
+
+    const {
+      acceptedList, reviewingList, failedList,
+    } = store
+    const currentList = [acceptedList, reviewingList, failedList][tabIndex];
+
     if (!currentList?.length) {
       const config = EMPTY_CONFIG[tabIndex]
       return <Empty icon={config.icon} tips={config.tips} />
+    }
+    const handleEdit = (item) => {
+      navigation.push("CardPublish", item);
+    }
+    const renderButtons = (item) => {
+      if (tabIndex === 0) {
+        return (
+          <TouchableOpacity
+            style={[styles.button, styles.deleteButton]}
+            onPress={() => handleDelete(item)}
+          >
+            <Text style={styles.buttonText}>删除</Text>
+          </TouchableOpacity>
+        );
+      } else {
+        return (
+          <>
+            <TouchableOpacity
+              style={[styles.button, styles.editButton]}
+              onPress={() => handleEdit(item)}
+            >
+              <Text style={styles.buttonText}>编辑</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={[styles.button, styles.deleteButton]}
+              onPress={() => handleDelete(item)}
+            >
+              <Text style={styles.buttonText}>删除</Text>
+            </TouchableOpacity>
+          </>
+        );
+      }
     }
     const styles = StyleSheet.create({
       listItem: {
@@ -362,23 +456,12 @@ export default function User() {
       <View>
         {currentList.map((item, index) => (
           <View key={`${item.id}-${index}`} style={styles.listItem}>
-            <Image style={styles.itemImage} source={{ uri: item.image }} />
+            <Image style={styles.itemImage} source={{ uri: item.images[0] }} />
             <View style={styles.itemContent}>
-              <Text style={styles.itemTitle}>{item.title}</Text>
-              <Text style={styles.itemText}>{item.content}</Text>
+              <Text numberOfLines={2} ellipsizeMode="tail" style={styles.itemTitle}>{item.title}</Text>
+              <Text numberOfLines={3} ellipsizeMode="tail" style={styles.itemText}>{item.content}</Text>
               <View style={styles.buttonContainer}>
-                <TouchableOpacity
-                  style={[styles.button, styles.editButton]}
-                  onPress={() => handleEdit(item)}
-                >
-                  <Text style={styles.buttonText}>编辑</Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                  style={[styles.button, styles.deleteButton]}
-                  onPress={() => handleDelete(item)}
-                >
-                  <Text style={styles.buttonText}>删除</Text>
-                </TouchableOpacity>
+                {renderButtons(item)}
               </View>
             </View>
           </View>
@@ -389,22 +472,6 @@ export default function User() {
 
   return (
     <View style={styles.container}>
-      {/* <Text style={styles.title}>User</Text>
-      <TextInput
-        style={styles.input}
-        placeholder="Username"
-        // onChangeText={(text) => setUsername(text)}
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Password"
-        // onChangeText={(text) => setPassword(text)}
-        secureTextEntry
-      />
-      <View style={styles.btn}>
-        <Button title="Login" onPress={() => console.log("Login")} />
-        <Button title="Register" onPress={() => console.log("Register")} />
-      </View> */}
       <Image
         style={[styles.bgImg, { height: bgImgHeight + 64 }]}
         // style={styles.bgImg}
