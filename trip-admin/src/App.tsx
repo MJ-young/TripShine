@@ -3,6 +3,7 @@ import { Route, Routes } from "react-router-dom";
 import LoginPage from "@views/login";
 import TripAdmin from "@views/tripAdmin";
 import UserAdmin from "@views/userAdmin";
+import EventPage from "@/views/event";
 import React, { useState } from "react";
 import { MenuFoldOutlined, MenuUnfoldOutlined } from "@ant-design/icons";
 import { Layout, Menu, Button } from "antd";
@@ -63,6 +64,7 @@ function App() {
             <Route path="/" element={<LoginPage />} />
             <Route path="/tripAdmin" element={<TripAdmin />} />
             <Route path="/userAdmin" element={<UserAdmin />} />
+            <Route path="/event" element={<EventPage />} />
           </Routes>
         </Content>
       </Layout>
