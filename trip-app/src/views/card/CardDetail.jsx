@@ -5,8 +5,7 @@ import icon_share from "@/assets/icon_share.png";
 
 const CardDetail = ({ route }) => {
   console.log(route);
-  const { title, content, authorName, authorAvatar, images, createdAt } =
-    route.params;
+  const { title, content, authorName, authorAvatar, images, createdAt } = route.params;
 
   const handleShare = () => {
     // 在此处添加分享逻辑
