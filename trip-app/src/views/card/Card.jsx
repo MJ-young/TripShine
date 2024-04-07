@@ -9,6 +9,9 @@ import {
   TouchableOpacity,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
+import { getTripsByStatus, Trip, passTrip, rejectTrip } from "../../api/trip";
+
+
 // import Share from 'react-native-share';
 
 const { width } = Dimensions.get("window");
@@ -89,6 +92,7 @@ const data = [
   // Add more data as needed
 ];
 
+
 const Card = ({ title, image, authorName, authorAvatar, onPress }) => (
   <TouchableOpacity style={styles.card} onPress={onPress}>
     <Image source={{ uri: image }} style={styles.image} />
@@ -105,8 +109,21 @@ const WaterfallList = () => {
   const navigation = useNavigation();
   const [columns, setColumns] = useState(Array.from({ length: COLUMN_COUNT }, () => []));
 
+  const loadData = async (pageNum = 1, pageSize = 1) => {
+    // setLoading(true);
+    getTripsByStatus({ status: "all", pageNum, pageSize })
+      .then((response) => {
+        console.log("我所接受的数据", response);
+      })
+      .catch((error) => {
+        console.error("Error fetching trips:", error);
+        setLoading(false);
+      });
+  };
+
   useEffect(() => {
     arrangeItems();
+    loadData();
   }, []);
 
   const arrangeItems = () => {
