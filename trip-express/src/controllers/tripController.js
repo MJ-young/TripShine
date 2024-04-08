@@ -1,11 +1,18 @@
 const Trip = require("../models/trip");
+const upload = require("../utils/upload");
+const multer = require("multer");
+const { deleteFilesFromOSS } = require("../utils/ossService");
+const parseForm = multer().none();
 
 // 创建游记
 exports.createTrip = async (req, res) => {
   try {
-    const newTrip = new Trip(req.body);
-    const savedTrip = await newTrip.save();
-    res.status(201).json({ data: savedTrip });
+    // 使用multer的.none方法处理表单数据
+    parseForm(req, res, async () => {
+      const newTrip = new Trip(req.body);
+      const savedTrip = await newTrip.save();
+      res.status(201).json({ data: savedTrip });
+    });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -56,10 +63,16 @@ exports.getTripDetail = async (req, res) => {
 // 更新游记
 exports.updateTrip = async (req, res) => {
   try {
-    const updatedTrip = await Trip.findByIdAndUpdate(req.params.id, req.body, {
-      new: true,
+    parseForm(req, res, async () => {
+      const updatedTrip = await Trip.findByIdAndUpdate(
+        req.params.id,
+        req.body,
+        {
+          new: true,
+        }
+      );
+      res.status(200).json({ data: updatedTrip });
     });
-    res.status(200).json({ data: updatedTrip });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -67,10 +80,31 @@ exports.updateTrip = async (req, res) => {
 
 // 物理删除游记
 exports.deleteTrip = async (req, res) => {
-  // 后续需要校验用户是否有权限删除游记
   try {
-    await Trip.findByIdAndDelete(req.params.id);
-    res.status(200).json({ message: "游记已删除" });
+    // 后续需要检查用户权限，只有游记的作者才能删除游记
+    // 删除游记并获取被删除的游记对象
+    const deletedTrip = await Trip.findByIdAndDelete(req.params.id);
+
+    // 检查是否成功找到并删除了游记
+    if (!deletedTrip) {
+      return res.status(404).json({ message: "游记未找到" });
+    }
+
+    // 获取游记的图片列表
+    const images = deletedTrip.images;
+
+    // 如果存在需要删除的图片，调用 deleteFilesFromOSS 进行批量删除
+    if (images && images.length > 0) {
+      const deleteResult = await deleteFilesFromOSS(images);
+      if (!deleteResult.success) {
+        // 如果图片删除失败，可以记录错误或返回错误信息
+        // 注意：这里我们选择记录错误，但仍然返回游记删除成功的信息
+        console.error("图片删除失败:", deleteResult.error);
+      }
+    }
+
+    // 返回成功删除游记的响应
+    res.status(200).json({ message: "游记及其图片已删除" });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -210,4 +244,46 @@ exports.getTripByAuditStatus = async (req, res) => {
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
+};
+
+// 上传游记图片列表或视频
+exports.uploadTripMedia = (req, res) => {
+  // 使用multer的single方法处理单个文件上传
+  // 文件字段名假设为'file'
+  upload.single("file")(req, res, function (err) {
+    if (err instanceof multer.MulterError) {
+      // 发生错误
+      return res.status(500).json({ message: err.message });
+    } else if (err) {
+      // 发生未知错误
+      return res.status(500).json({ message: "文件上传失败" });
+    }
+
+    // 上传成功，req.file 包含了文件的信息
+    const file = req.file;
+    console.log(file);
+
+    res.status(200).json({ url: file.url, message: "上传成功" });
+  });
+};
+
+exports.uploadTripMediaMultiple = (req, res) => {
+  // 假设前端表单中的文件字段名为'images'，最多上传5张图片
+  upload.array("images", 5)(req, res, function (err) {
+    if (err instanceof multer.MulterError) {
+      // 发生Multer错误（例如文件太多）
+      return res.status(500).json({ error: err.message });
+    } else if (err) {
+      // 发生其他错误
+      return res.status(500).json({ error: "文件上传失败" });
+    }
+
+    // 上传成功，req.files 包含了文件的信息（注意这里是files，不是file）
+    const files = req.files;
+    console.log(files);
+
+    // 返回上传文件的URL数组
+    const urls = files.map((file) => file.url); // multer-aliyun-oss会在成功上传后添加url属性到每个文件对象
+    res.status(200).json({ urls, message: "上传成功" });
+  });
 };

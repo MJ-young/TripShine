@@ -9,10 +9,14 @@ const tripSchema = new mongoose.Schema({
   // userId: { type: mongoose.Schema.Types.ObjectId, required: true },
   // userId关联到用户模型的_id字段
   userId: { type: String, required: true },
-  username: { type: String, required: true },
-  avatar: { type: String },
+  username: { type: String },
+  avatar: {
+    type: String,
+    default:
+      "http://tripshine.oss-cn-shanghai.aliyuncs.com/public/images/8ea864552b199085f746839df5e16428.png",
+  },
   // likeCount: { type: Number, default: 0 },
-  images: { type: [String] },
+  images: { type: [String], default: [] },
   // 审核状态：wait-待审核，pass-审核通过，reject-审核拒绝
   auditStatus: { type: String, default: "wait" },
   // 审核时间
