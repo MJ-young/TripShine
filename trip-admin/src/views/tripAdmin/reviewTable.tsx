@@ -7,7 +7,7 @@ const ReviewTable = () => {
   const [total, setTotal] = useState<number>(0);
   const [loading, setLoading] = useState<boolean>(false);
 
-  const loadData = async (pageNum = 1, pageSize = 1) => {
+  const loadData = async (pageNum = 1, pageSize = 10) => {
     setLoading(true);
     getTripsByStatus({ status: "all", pageNum, pageSize })
       .then((response) => {
@@ -47,8 +47,8 @@ const ReviewTable = () => {
     },
     {
       title: "创建时间",
-      dataIndex: "createdAt",
-      key: "createdAt",
+      dataIndex: "createTime",
+      key: "createTime",
     },
     {
       title: "状态",
@@ -111,7 +111,7 @@ const ReviewTable = () => {
 
   return (
     <Table
-      rowKey={"id"}
+      rowKey={"_id"}
       loading={loading}
       pagination={{
         total: total,

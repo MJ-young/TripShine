@@ -49,7 +49,7 @@ function App() {
           items={routeItems}
         />
       </Sider>
-      <Layout>
+      <Layout className="mian">
         <Header className="header">
           <Button
             type="text"

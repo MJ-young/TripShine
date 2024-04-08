@@ -48,14 +48,15 @@ exports.loginUser = async (req, res) => {
       if (!isPasswordValid) {
         return res.status(401).json({ message: "Invalid password" });
       }
+      const payload = {
+        userId: user._id,
+        userRole: "user", // 假设用户模型中包含角色信息
+      };
       // 生成token
-      const token = jwt.sign({ userId: user._id }, secretKey, {
-        // expiresIn: "1h",
+      const token = jwt.sign(payload, secretKey, {
         // 测试时设置token过期时间为2分钟
-        expiresIn: "10m",
+        expiresIn: "24h",
       });
-      // 设置session
-      req.session.user = user;
       res.status(200).json({ message: "Login successful", token });
     });
   } catch (error) {
@@ -68,7 +69,7 @@ exports.loginUser = async (req, res) => {
 
 exports.logoutUser = async (req, res) => {
   try {
-    req.session.destroy();
+    // req.session.destroy();
     res.status(200).json({ message: "Logout successful" });
   } catch (error) {
     res.status(500).json({ message: "Failed to logout" });
@@ -76,7 +77,8 @@ exports.logoutUser = async (req, res) => {
 };
 
 exports.getUserInfo = async (req, res) => {
-  const user = req.session.user;
+  const userId = req.userId;
+  const user = await User.findOne({ _id: userId });
   if (!user) {
     return res.status(401).json({ message: "Unauthorized" });
   }
@@ -88,8 +90,9 @@ exports.getUserInfo = async (req, res) => {
 // 上传用户头像
 exports.uploadAvatar = async (req, res) => {
   try {
+    const userId = req.userId;
     // 文件字段名假设为'avatar'
-    upload.single("avatar")(req, res, function (err) {
+    upload.single("avatar")(req, res, async function (err) {
       if (err instanceof multer.MulterError) {
         // 发生错误
         return res.status(500).json({ message: err.message });
@@ -101,8 +104,7 @@ exports.uploadAvatar = async (req, res) => {
       const file = req.file;
       console.log(file);
       // 将数据库中的用户头像字段更新为上传的文件url
-      // const user = req.session.user;
-      // await User.findByIdAndUpdate(user._id, { avatar: file.url });
+      await User.findByIdAndUpdate(userId, { avatar: file.url });
 
       res.status(200).json({ url: file.url, message: "上传成功" });
     });
@@ -124,4 +126,5 @@ exports.updateUserInfo = async (req, res) => {
   // } catch (error) {
   //   res.status(500).json({ message: "Failed to update user info" });
   // }
+  res.status(200).json({ message: "接口正在开发" });
 };
