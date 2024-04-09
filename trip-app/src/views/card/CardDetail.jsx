@@ -1,15 +1,19 @@
 import React, { useState } from "react";
-import { View, Text, Image, StyleSheet, TouchableOpacity } from "react-native";
+import { View, Text, Image, StyleSheet, TouchableOpacity, ScrollView } from "react-native";
 import Swiper from "react-native-swiper";
 import icon_share from "@/assets/icon_share.png";
 
 const CardDetail = ({ route }) => {
-  console.log(route);
-  const { title, content, authorName, authorAvatar, images, createdAt } = route.params;
+  const { title, content, username, avatar, images, createTime } = route.params;
+  const [activeIndex, setActiveIndex] = useState(0);
+
 
   const handleShare = () => {
     // 在此处添加分享逻辑
     console.log("分享功能待实现");
+  };
+  const onIndexChanged = (index) => {
+    setActiveIndex(index);
   };
   return (
     <View style={styles.container}>
@@ -22,6 +26,7 @@ const CardDetail = ({ route }) => {
           activeDotColor={"green"}
           paginationStyle={styles.paginationStyle}
           showsButtons
+          onIndexChanged={onIndexChanged}
         >
           {images.map((image, index) => (
             <View key={index} style={styles.slide}>
@@ -32,10 +37,10 @@ const CardDetail = ({ route }) => {
       </View>
       <View style={styles.infoContainer}>
         <View style={styles.authorInfo}>
-          <Image source={{ uri: authorAvatar }} style={styles.avatar} />
+          <Image source={{ uri: avatar }} style={styles.avatar} />
           <View style={styles.authorTextContainer}>
-            <Text style={styles.authorName}>{authorName}</Text>
-            <Text style={styles.createdAt}>{createdAt}</Text>
+            <Text style={styles.authorName}>{username}</Text>
+            <Text style={styles.createdAt}>{createTime.slice(0, 10)}</Text>
           </View>
           <TouchableOpacity onPress={handleShare}>
             <Image source={icon_share} style={styles.shareIcon} />

@@ -1,4 +1,4 @@
-// src/api/trip.ts
+// src/api/allTrip.ts     所有用户已通过审核的游记
 import request from "../utils/request"; // 假设你已经有了一个配置好的axios实例
 
 // 定义接口返回类型（根据你的实际数据结构调整）
@@ -25,31 +25,12 @@ export interface Trip {
 }
 
 // 封装查询旅行日记列表的函数
-export const getTripsByStatus = (
+export const getAllPassTrips = (
     params: FetchTripsParams
 ): Promise<TripListResponse> => {
     return request({
-        url: `/api/trip/audit/status/${params.status}`,
+        url: `/api/trip/`,
         method: "get",
-        params: {
-            pageNum: params.pageNum,
-            pageSize: params.pageSize,
-        },
     });
 };
 
-// 封装审核通过的函数
-export const passTrip = (id: string): Promise<unknown> => {
-    return request({
-        url: `/api/trip/audit/pass/${id}`,
-        method: "put",
-    });
-};
-
-// 封装拒绝的函数
-export const rejectTrip = (id: string): Promise<unknown> => {
-    return request({
-        url: `/api/trip/audit/reject/${id}`,
-        method: "put",
-    });
-};
