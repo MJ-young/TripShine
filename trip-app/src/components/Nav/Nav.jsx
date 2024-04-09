@@ -25,13 +25,7 @@ function ListStackScreen() {
         }}
       ></ListStack.Screen>
       <ListStack.Screen name="Detail" component={CardDetail}></ListStack.Screen>
-      <ListStack.Screen
-        name="User"
-        component={User}
-        options={{
-          title: "User",
-        }}
-      ></ListStack.Screen>
+      <ListStack.Screen name="User" component={User}></ListStack.Screen>
       <ListStack.Screen name="CardPublish" component={CardPublish}></ListStack.Screen>
 
     </ListStack.Navigator>

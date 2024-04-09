@@ -9,88 +9,13 @@ import {
   TouchableOpacity,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
-import { getTripsByStatus, Trip, passTrip, rejectTrip } from "../../api/trip";
+import { getAllPassTrips } from "../../api/allTrip";
 
 
 // import Share from 'react-native-share';
 
 const { width } = Dimensions.get("window");
 const COLUMN_COUNT = 2;
-
-const data = [
-  {
-    id: 1,
-    title: "南京真美",
-    content:
-      "南京真美南京真美南京真美南京真美南京真美南京真美南京真美南京真美南京真美",
-    images: [
-      "https://img2.baidu.com/it/u=1028011339,1319212411&fm=253&fmt=auto&app=138&f=JPEG?w=500&h=313",
-      "https://img0.baidu.com/it/u=1500348864,197010116&fm=253&fmt=auto?w=1422&h=800",
-    ],
-    authorName: "小V",
-    authorAvatar:
-      "https://p1.bdxiguaimg.com/img/mosaic-legacy/98a3000db0cf08d5d3c4~0x0.image",
-    createdAt: "2024-01-03",
-  },
-  {
-    id: 2,
-    title:
-      "三天两碗旅游攻略三天两碗旅游攻略三天两碗旅游攻略三天两碗旅游攻略三天两碗旅游攻略三天两碗旅游攻略三天两碗旅游攻略三天两碗旅游攻略三天两碗旅游攻略",
-    content:
-      "三天两碗旅游攻略三天两碗旅游攻略三天两碗旅游攻略三天两碗旅游攻略三天两碗旅游攻略",
-    images: [
-      "https://img0.baidu.com/it/u=2568912107,2529303106&fm=253&fmt=auto&app=138&f=JPEG?w=500&h=889",
-      "https://img0.baidu.com/it/u=1500348864,197010116&fm=253&fmt=auto?w=1422&h=800",
-    ],
-    authorName: "布尔",
-    authorAvatar:
-      "https://t11.baidu.com/it/u=1184198955,213098737&fm=30&app=106&f=JPEG?w=640&h=640&s=2BA67523048BF2A75D2C65F30300E022",
-    createdAt: "2023-01-03",
-  },
-  {
-    id: 3,
-    title: "三天两碗旅游攻略",
-    content:
-      "三天两碗旅游攻略三天两碗旅游攻略三天两碗旅游攻略三天两碗旅游攻略三天两碗旅游攻略",
-    images: [
-      "https://img0.baidu.com/it/u=2568912107,2529303106&fm=253&fmt=auto&app=138&f=JPEG?w=500&h=889",
-      "https://img0.baidu.com/it/u=1500348864,197010116&fm=253&fmt=auto?w=1422&h=800",
-    ],
-    authorName: "布尔",
-    authorAvatar:
-      "https://t11.baidu.com/it/u=1184198955,213098737&fm=30&app=106&f=JPEG?w=640&h=640&s=2BA67523048BF2A75D2C65F30300E022",
-    createdAt: "2022-01-03",
-  },
-  {
-    id: 4,
-    title: "三天两碗旅游攻略",
-    content:
-      "三天两碗旅游攻略三天两碗旅游攻略三天两碗旅游攻略三天两碗旅游攻略三天两碗旅游攻略",
-    images: [
-      "https://img0.baidu.com/it/u=2568912107,2529303106&fm=253&fmt=auto&app=138&f=JPEG?w=500&h=889",
-      "https://img0.baidu.com/it/u=1500348864,197010116&fm=253&fmt=auto?w=1422&h=800",
-    ],
-    authorName: "布尔",
-    authorAvatar:
-      "https://t11.baidu.com/it/u=1184198955,213098737&fm=30&app=106&f=JPEG?w=640&h=640&s=2BA67523048BF2A75D2C65F30300E022",
-    createdAt: "2021-01-03",
-  },
-  {
-    id: 5,
-    title: "三天两碗旅游攻略",
-    content:
-      "三天两碗旅游攻略三天两碗旅游攻略三天两碗旅游攻略三天两碗旅游攻略三天两碗旅游攻略",
-    images: [
-      "https://img0.baidu.com/it/u=2568912107,2529303106&fm=253&fmt=auto&app=138&f=JPEG?w=500&h=889",
-      "https://img0.baidu.com/it/u=1500348864,197010116&fm=253&fmt=auto?w=1422&h=800",
-    ],
-    authorName: "布尔",
-    authorAvatar:
-      "https://t11.baidu.com/it/u=1184198955,213098737&fm=30&app=106&f=JPEG?w=640&h=640&s=2BA67523048BF2A75D2C65F30300E022",
-    createdAt: "2020-01-03",
-  },
-  // Add more data as needed
-];
 
 
 const Card = ({ title, image, authorName, authorAvatar, onPress }) => (
@@ -107,13 +32,16 @@ const Card = ({ title, image, authorName, authorAvatar, onPress }) => (
 
 const WaterfallList = () => {
   const navigation = useNavigation();
+  const [trips, setTrips] = useState([]);
+  const [loading, setLoading] = useState(true);
+
   const [columns, setColumns] = useState(Array.from({ length: COLUMN_COUNT }, () => []));
 
-  const loadData = async (pageNum = 1, pageSize = 1) => {
-    // setLoading(true);
-    getTripsByStatus({ status: "all", pageNum, pageSize })
+  const loadData = async () => {
+    getAllPassTrips()
       .then((response) => {
-        console.log("我所接受的数据", response);
+        setTrips(response.data);
+        setLoading(false);
       })
       .catch((error) => {
         console.error("Error fetching trips:", error);
@@ -122,15 +50,20 @@ const WaterfallList = () => {
   };
 
   useEffect(() => {
-    arrangeItems();
     loadData();
   }, []);
 
+  useEffect(() => {
+    arrangeItems();
+  }, [trips]); // 当trips发生变化时重新调用arrangeItems
+
   const arrangeItems = () => {
+    // const newTrip = [...trips];
+
     const newColumns = Array.from({ length: COLUMN_COUNT }, () => []);
     let columnHeights = Array.from({ length: COLUMN_COUNT }, () => 0);
 
-    data.forEach((item) => {
+    trips.forEach((item, index) => {
       const minHeightIndex = columnHeights.indexOf(Math.min(...columnHeights));
       newColumns[minHeightIndex].push(item);
       const imageHeight = width / 2; // Assuming images have equal width and height for simplicity
@@ -152,11 +85,11 @@ const WaterfallList = () => {
           <View key={index} style={styles.column}>
             {column.map((item) => (
               <Card
-                key={item.id}
+                key={item._id}
                 title={item.title}
                 image={item.images[0]}
-                authorName={item.authorName}
-                authorAvatar={item.authorAvatar}
+                authorName={item.username}
+                authorAvatar={item.avatar}
                 onPress={() => handleCardPress(item)}
               />
             ))}
@@ -189,6 +122,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 4,
     elevation: 5,
+    width: 170
   },
   image: {
     width: "100%",

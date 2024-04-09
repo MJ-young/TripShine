@@ -3,6 +3,7 @@ import { StyleSheet, View, ScrollView, Text, TouchableOpacity, Image, RefreshCon
 import { useNavigation } from "@react-navigation/native";
 // import SideMenu, { SideMenuRef } from "./components/SideMenu"
 import Empty from "../../components/Empty";
+import { Button, message, Popconfirm } from 'antd';
 
 import icon_mine_bg from '../../assets/icon_mine_bg.jpg';
 import icon_menu from '../../assets/icon_menu.png';
@@ -13,86 +14,15 @@ import icon_setting from '../../assets/icon_setting.png';
 import icon_edit from '../../assets/icon_edit.png';
 import icon_no_list from '../../assets/icon_no_list.png';
 
+import { getTripsByUSerID, deleteTrip } from "../../api/statusTrip";
+
+
+
 const EMPTY_CONFIG = [
   { icon: icon_no_list, tips: "快去发布今日的好心情吧～" },
   { icon: icon_no_list, tips: "快去发布今日的好心情吧～" },
   { icon: icon_no_list, tips: "快去发布今日的好心情吧～" },
 ]
-
-const store = {
-  "info": {
-    "infoAcceptCount": 3,
-    "infoReviewCount": 2,
-    "infoFailedCount": 2,
-  },
-  "acceptedList": [
-    {
-      id: 1,
-      title: '列表流是什么？',
-      content: ' 一种以文字信息为主导的功能布局形式，主要以文字+图片、文字+图标形式出现的',
-      images: [
-        "https://img2.baidu.com/it/u=1028011339,1319212411&fm=253&fmt=auto&app=138&f=JPEG?w=500&h=313",
-        "https://img0.baidu.com/it/u=1500348864,197010116&fm=253&fmt=auto?w=1422&h=800",],
-    },
-    {
-      id: 2,
-      title: '瀑布流是什么？',
-      content: '瀑布流是“瀑布流式布局”的简称，因滑动时会像瀑布一样“飞流直下”“源源不断”，故而得名。是一种以图片信息为主导的页面布局形式，主要以图片+文字形式出现',
-      images: [
-        'https://th.bing.com/th/id/R.2a6d9ad38dd2ec831d3fb01f11e30d82?rik=lPLWAVWvZHZxDA&riu=http%3a%2f%2fseopic.699pic.com%2fphoto%2f40054%2f1002.jpg_wh1200.jpg&ehk=NxURVbGtLSDFkRiXqySb8Nsa3KV6U41BbFcI0zZg2%2fw%3d&risl=&pid=ImgRaw&r=0',
-        'https://pic.sucaibar.com/pic/201611/24/c9bc97f432.jpg'],
-    },
-    {
-      id: 3,
-      title: 'N皇后问题',
-      content: '八皇后问题（英文：Eight queens），是由国际西洋棋棋手马克斯·贝瑟尔于1848年提出的问题，是回溯算法的典型案例。问题表述为：在8×8格的国际象棋上摆放8个皇后，使其不能互相攻击，即任意两个皇后都不能处于同一行、同一列或同一斜线上，问有多少种摆法。高斯认为有76种方案。1854年在柏林的象棋杂志上不同的作者发表了40种不同的解，后来有人用图论的方法解出92种结果。如果经过±90度、±180度旋转，和对角线对称变换的摆法看成一类，共有42类。计算机发明后，有多种计算机语言可以编程解决此问题。',
-      images: [
-        'https://www.hello-algo.com/chapter_backtracking/n_queens_problem.assets/solution_4_queens.png',
-        'https://pic.sucaibar.com/pic/201611/24/c9bc97f432.jpg'],
-    },
-  ],
-  "reviewingList": [
-    {
-      id: 1,
-      title: "南京真美",
-      content:
-        "南京真美南京真美南京真美南京真美南京真美南京真美南京真美南京真美南京真美",
-      images: [
-        "https://img2.baidu.com/it/u=1028011339,1319212411&fm=253&fmt=auto&app=138&f=JPEG?w=500&h=313",
-        "https://img0.baidu.com/it/u=1500348864,197010116&fm=253&fmt=auto?w=1422&h=800",
-      ]
-    },
-    {
-      id: 2,
-      title: "三天两碗旅游攻略三天两碗旅游攻略三天两碗旅游攻略三天两碗旅游攻略三天两碗旅游攻略三天两碗旅游攻略三天两碗旅游攻略三天两碗旅游攻略三天两碗旅游攻略",
-      content:
-        "南京真美南京真美南京真美南京真美南京真美南京真美南京真美南京真美南京真美",
-      images: [
-        "https://img2.baidu.com/it/u=1028011339,1319212411&fm=253&fmt=auto&app=138&f=JPEG?w=500&h=313",
-        "https://img0.baidu.com/it/u=1500348864,197010116&fm=253&fmt=auto?w=1422&h=800",
-      ]
-    },
-  ],
-  "failedList": [
-    {
-      id: 1,
-      title: '卡片流是什么？',
-      content: '卡片流 列表流的升级版，形式多样 特点——多变、聚焦',
-      images: [
-        'https://pic.sucaibar.com/pic/201611/24/c9bc97f432.jpg',
-        'https://th.bing.com/th/id/OIP.0_NEV1BFaG8yqw8RFHrZGgHaLA?rs=1&pid=ImgDetMain',
-      ],
-    },
-    {
-      id: 2,
-      title: '瀑布流是什么？',
-      content: '瀑布流是“瀑布流式布局”的简称，因滑动时会像瀑布一样“飞流直下”“源源不断”，故而得名。是一种以图片信息为主导的页面布局形式，主要以图片+文字形式出现',
-      images: [
-        'https://th.bing.com/th/id/R.2a6d9ad38dd2ec831d3fb01f11e30d82?rik=lPLWAVWvZHZxDA&riu=http%3a%2f%2fseopic.699pic.com%2fphoto%2f40054%2f1002.jpg_wh1200.jpg&ehk=NxURVbGtLSDFkRiXqySb8Nsa3KV6U41BbFcI0zZg2%2fw%3d&risl=&pid=ImgRaw&r=0',
-        'https://pic.sucaibar.com/pic/201611/24/c9bc97f432.jpg'],
-    },
-  ]
-}
 
 const userInfo = {
   "avatar": icon_avatar,
@@ -106,6 +36,46 @@ export default function User() {
   const [tabIndex, setTabIndex] = useState(0);
   // const sideMenuRef = useRef < SideMenuRef > (null)
   // const store = useLocalStore(() => new MineStore())
+  const [passTrips, setPassTrips] = useState([]);
+  const [waitTrips, setWaitTrips] = useState([]);
+  const [rejectTrips, setRejectTrips] = useState([]);
+
+  const [messageApi, contextHolder] = message.useMessage();   //删除loading
+  const key = 'updatable';
+  { contextHolder }
+
+  const loadPassData = async (userId = 1, pageNum = 1, pageSize = 10) => {     //获取已发布游记
+    getTripsByUSerID({ status: "pass", userId, pageNum, pageSize })
+      .then((response) => {
+        setPassTrips(response.data);
+      })
+      .catch((error) => {
+        console.error("Error fetching trips:", error);
+      });
+  };
+  const loadWaitData = async (userId = 1, pageNum = 1, pageSize = 10) => {     //获取已发布游记
+    getTripsByUSerID({ status: "wait", userId, pageNum, pageSize })
+      .then((response) => {
+        setWaitTrips(response.data);
+      })
+      .catch((error) => {
+        console.error("Error fetching trips:", error);
+      });
+  };
+  const loadRejectData = async (userId = 1, pageNum = 1, pageSize = 10) => {     //获取已发布游记
+    getTripsByUSerID({ status: "reject", userId, pageNum, pageSize })
+      .then((response) => {
+        setRejectTrips(response.data);
+      })
+      .catch((error) => {
+        console.error("Error fetching trips:", error);
+      });
+  };
+  useEffect(() => {
+    loadPassData();
+    loadWaitData();
+    loadRejectData();
+  }, []);
 
   const renderTitle = () => {
     const styles = StyleSheet.create({
@@ -148,7 +118,6 @@ export default function User() {
   }
   const renderInfo = () => {
     const { avatar, nickName, desc } = userInfo
-    const { info } = store
     const styles = StyleSheet.create({
       avatarLayout: {
         width: "100%",
@@ -254,15 +223,15 @@ export default function User() {
 
         <View style={styles.infoLayout}>
           <View style={styles.infoItem}>
-            <Text style={styles.infoValue}>{info.infoAcceptCount}</Text>
+            <Text style={styles.infoValue}>{passTrips.length}</Text>
             <Text style={styles.infoLabel}>已发布</Text>
           </View>
           <View style={styles.infoItem}>
-            <Text style={styles.infoValue}>{info.infoReviewCount}</Text>
+            <Text style={styles.infoValue}>{waitTrips.length}</Text>
             <Text style={styles.infoLabel}>待审核</Text>
           </View>
           <View style={styles.infoItem}>
-            <Text style={styles.infoValue}>{info.infoFailedCount}</Text>
+            <Text style={styles.infoValue}>{rejectTrips.length}</Text>
             <Text style={styles.infoLabel}>未通过</Text>
           </View>
 
@@ -363,43 +332,67 @@ export default function User() {
   const renderList = () => {
     const navigation = useNavigation();
 
-    const {
-      acceptedList, reviewingList, failedList,
-    } = store
-    const currentList = [acceptedList, reviewingList, failedList][tabIndex];
+    const currentList = [passTrips, waitTrips, rejectTrips][tabIndex];
 
     if (!currentList?.length) {
       const config = EMPTY_CONFIG[tabIndex]
       return <Empty icon={config.icon} tips={config.tips} />
     }
     const handleEdit = (item) => {
-      navigation.push("CardPublish", item);
+      navigation.navigate("CardPublish", item);
     }
+    const confirm = (_id) => {
+      deleteTrip(_id)
+        .then(() => {
+          message.success('删除成功');
+          if (tabIndex === 0) {
+            loadPassData(); // Reload pass trips
+          } else if (tabIndex === 1) {
+            loadWaitData(); // Reload wait trips
+          } else if (tabIndex === 2) {
+            loadRejectData(); // Reload reject trips
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    };
+
+    const cancel = (e) => {
+      message.success('已取消');
+    };
     const renderButtons = (item) => {
       if (tabIndex === 0) {
         return (
-          <TouchableOpacity
-            style={[styles.button, styles.deleteButton]}
-            onPress={() => handleDelete(item)}
+          <Popconfirm
+            title="提示"
+            description="是否删除该游记?"
+            onConfirm={() => confirm(item._id)}
+            onCancel={cancel}
+            okText="是"
+            cancelText="否"
           >
-            <Text style={styles.buttonText}>删除</Text>
-          </TouchableOpacity>
+            <Button danger style={styles.deleteButton}>删除</Button>
+          </Popconfirm>
         );
       } else {
         return (
           <>
-            <TouchableOpacity
-              style={[styles.button, styles.editButton]}
-              onPress={() => handleEdit(item)}
+            <TouchableOpacity onPress={() => handleEdit(item)}
             >
-              <Text style={styles.buttonText}>编辑</Text>
+              <Button type="primary" style={styles.editButton}>编辑</Button>
             </TouchableOpacity>
-            <TouchableOpacity
-              style={[styles.button, styles.deleteButton]}
-              onPress={() => handleDelete(item)}
+
+            <Popconfirm
+              title="提示"
+              description="是否删除该游记?"
+              onConfirm={() => confirm(_id)}
+              onCancel={cancel}
+              okText="是"
+              cancelText="否"
             >
-              <Text style={styles.buttonText}>删除</Text>
-            </TouchableOpacity>
+              <Button danger style={styles.deleteButton}>删除</Button>
+            </Popconfirm>
           </>
         );
       }
@@ -446,8 +439,6 @@ export default function User() {
       },
       deleteButton: {
         backgroundColor: '#ff4500',
-      },
-      buttonText: {
         color: 'white',
         fontSize: 14,
       },
@@ -474,7 +465,6 @@ export default function User() {
     <View style={styles.container}>
       <Image
         style={[styles.bgImg, { height: bgImgHeight + 64 }]}
-        // style={styles.bgImg}
         source={icon_mine_bg}
       />
       {renderTitle()}
