@@ -1,7 +1,9 @@
 import axios from "axios";
 import { notification, Modal, message } from "antd";
-// import store from "@/store";
+import { useNavigate } from "react-router-dom";
 import { getToken } from "@/utils/auth";
+import { useDispatch } from "react-redux";
+import { clearUser } from "@/store/actions";
 
 export const isRelogin = { show: false };
 
@@ -46,6 +48,8 @@ service.interceptors.response.use(
     console.error("err" + error);
     if (error.response.status) {
       const msg = error.response.data.message;
+      const dispatch = useDispatch();
+      const navigation = useNavigate();
       switch (error.response.status) {
         case 401:
           if (isRelogin.show) {
@@ -59,9 +63,9 @@ service.interceptors.response.use(
             okText: "重新登录",
             cancelText: "取消",
             onOk() {
-              //   store.dispatch("LogOut").then(() => {
-              //     location.href = "/";
-              //   });
+              dispatch(clearUser());
+              navigation("/");
+              isRelogin.show = false;
             },
             onCancel() {
               isRelogin.show = false;

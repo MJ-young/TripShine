@@ -1,0 +1,56 @@
+.login-container {
+    display: flex;
+    height: 100vh;
+    justify-content: center;
+    align-items: center;
+    background-image: url('@/assets/bg.jpg'); // 替换为你的图片路径
+    // background-image: url('@/assets/logo-bg.png'); // 替换为你的图片路径
+    background-size: cover;
+    background-position: center;
+  
+    .login-branding {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+  
+      .logo-name {
+        color: white;
+        font-size: 6rem;
+        text-align: center;
+      }
+  
+      .first-letter {
+        font-size: 7rem;
+        color: #FFA500; // 橙色
+      }
+    }
+  
+    .login-form-container {
+      margin-right: 15rem;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      .login-title {
+        text-align: center;
+        color: black;
+        font-size: 1.5rem;
+        margin-bottom: 20px;
+      }
+    }
+    
+    // 自定义卡片样式
+    .ant-card {
+        width: 22rem;
+        text-align: center;
+        background: rgba(255, 255, 255, 0.2); // 卡片背景为半透明白色
+        backdrop-filter: blur(10px); // 应用模糊效果
+        -webkit-backdrop-filter: blur(10px); // Safari浏览器的兼容性写法
+        border-radius: 20px; // 圆角边框
+        border: 1px solid rgba(255, 255, 255, 0.3); // 轻微的边框高亮
+        padding: 10px; // 内边距
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); // 轻微的阴影效果，增加层次感
+        color: white; // 文字颜色
+      }
+  }

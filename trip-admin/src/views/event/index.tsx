@@ -1,6 +1,7 @@
 // TravelogueCounts.js
 import React, { useEffect, useState } from "react";
 import UserUpdate from "./userUpdate";
+import useSSE from "@/utils/useSSE";
 
 const EventPage = () => {
   const [counts, setCounts] = useState({
@@ -11,19 +12,30 @@ const EventPage = () => {
   });
 
   useEffect(() => {
-    const eventSource = new EventSource(
-      "http://localhost:3000/api/event/audit/count"
-    );
+    const url = "/event/audit/count";
 
-    eventSource.onmessage = (event) => {
-      const data = JSON.parse(event.data);
-      console.log(data);
-      setCounts(data);
-    };
+    // 调用useSSE并保存返回的清理函数
+    // eslint-disable-next-line react-hooks/rules-of-hooks
+    const cleanup = useSSE(url, {
+      onOpen: (response) => {
+        console.log("Connection opened", response);
+      },
+      onMessage: (event) => {
+        console.log("Received message:", event.data);
+        const data = JSON.parse(event.data);
+        console.log(data);
+        setCounts(data);
+      },
+      onError: (error) => {
+        console.error("Error:", error);
+      },
+      onClose: () => {
+        console.log("Connection closed");
+      },
+    });
 
-    return () => {
-      eventSource.close();
-    };
+    // useEffect的清理函数，用于在组件卸载时执行清理操作
+    return cleanup;
   }, []);
 
   return (
