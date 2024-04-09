@@ -3,20 +3,20 @@ const connectDB = require("./src/config/db");
 const routes = require("./src/routes");
 const cors = require("cors");
 
-const session = require("express-session");
+// const session = require("express-session");
 const cookieParser = require("cookie-parser");
 
 const app = express();
 app.use(express.json());
 app.use(cookieParser());
-app.use(
-  session({
-    secret: "your-secret-key",
-    resave: false,
-    saveUninitialized: true,
-    // cookie: { maxAge: 1200000 }, // 设置cookie的过期时间为20分钟（20 * 60 * 1000 毫秒）
-  })
-);
+// app.use(
+//   session({
+//     secret: "your-secret-key",
+//     resave: false,
+//     saveUninitialized: true,
+//     // cookie: { maxAge: 1200000 }, // 设置cookie的过期时间为20分钟（20 * 60 * 1000 毫秒）
+//   })
+// );
 connectDB();
 
 app.use(

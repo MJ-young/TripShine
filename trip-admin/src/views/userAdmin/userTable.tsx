@@ -8,7 +8,7 @@ const UserTable = () => {
   const [total, setTotal] = useState<number>(0);
   const [loading, setLoading] = useState<boolean>(false);
 
-  const loadData = async (pageNum = 1, pageSize = 1) => {
+  const loadData = async (pageNum = 1, pageSize = 10) => {
     setLoading(true);
     getAdminList({ pageNum, pageSize })
       .then((response) => {
@@ -106,7 +106,7 @@ const UserTable = () => {
     <>
       <AddAdmin />
       <Table
-        rowKey={"id"}
+        rowKey={"_id"}
         loading={loading}
         pagination={{
           total: total,

@@ -24,9 +24,9 @@ const checkAuth = (req, res, next) => {
       });
     }
 
-    // 在这里可以根据decoded中的信息来识别和验证用户身份
-    // 例如，可以将用户ID存储在req对象中，以便后续路由中使用
+    // 根据decoded中的信息来识别和验证用户身份
     req.userId = decoded.userId;
+    req.userRole = decoded.userRole;
     next();
   });
 };

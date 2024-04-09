@@ -1,12 +1,17 @@
 // src/store/actions/userActions.js
 
 import { SET_USER, UPDATE_USER, CLEAR_USER } from "../actionTypes";
+import { setToken, removeToken } from "@/utils/auth";
 
 // Action to set user information
-export const setUser = (user) => ({
-  type: SET_USER,
-  payload: user,
-});
+export const setUser = (userData) => {
+  // setToken
+  setToken(userData.token);
+  return {
+    type: SET_USER,
+    payload: userData,
+  };
+};
 
 // Action to update user information
 export const updateUser = (updates) => ({
@@ -15,6 +20,9 @@ export const updateUser = (updates) => ({
 });
 
 // Action to clear user information
-export const clearUser = () => ({
-  type: CLEAR_USER,
-});
+export const clearUser = () => {
+  removeToken();
+  return {
+    type: CLEAR_USER,
+  };
+};

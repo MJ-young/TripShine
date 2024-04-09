@@ -18,14 +18,14 @@ exports.loginAdmin = async (req, res) => {
     if (!isPasswordValid) {
       return res.status(401).json({ message: "Invalid password" });
     }
+    const payload = {
+      userId: user._id,
+      userRole: user.role, // 假设用户模型中包含角色信息
+    };
     // 生成token
-    const token = jwt.sign({ userId: user._id }, secretKey, {
-      // expiresIn: "1h",
-      // 测试时设置token过期时间为2分钟
-      expiresIn: "10m",
+    const token = jwt.sign(payload, secretKey, {
+      expiresIn: "1h",
     });
-    // 设置session
-    req.session.user = user;
     const userInfo = {
       userId: user._id,
       username: user.username,
@@ -42,7 +42,7 @@ exports.loginAdmin = async (req, res) => {
 
 exports.logoutAdmin = async (req, res) => {
   try {
-    req.session.destroy();
+    // req.session.destroy();
     res.status(200).json({ message: "Logout successful" });
   } catch (error) {
     res.status(500).json({ message: "Failed to logout" });
@@ -50,12 +50,14 @@ exports.logoutAdmin = async (req, res) => {
 };
 
 exports.getAllUsers = async (req, res) => {
+  const userRole = req.userRole;
+  if (userRole !== "super") {
+    return res.status(403).json({ message: "Unauthorized" });
+  }
   // 分页查询
   const { page = 1, limit = 10 } = req.query;
   const skip = (page - 1) * limit;
   try {
-    // const users = await Admin.find();
-    // const users = await Admin.find().skip(skip).limit(limit);
     // 不返回密码字段
     const users = await Admin.find({}, { password: 0 }).skip(skip).limit(limit);
     const total = await Admin.countDocuments();
@@ -69,6 +71,10 @@ exports.getAllUsers = async (req, res) => {
 };
 
 exports.deleteUser = async (req, res) => {
+  const userRole = req.userRole;
+  if (userRole !== "super") {
+    return res.status(403).json({ message: "Unauthorized" });
+  }
   try {
     await Admin.findByIdAndDelete(req.params.id);
     res.status(200).json({ message: "User deleted" });
@@ -78,6 +84,10 @@ exports.deleteUser = async (req, res) => {
 };
 
 exports.createUser = async (req, res) => {
+  const userRole = req.userRole;
+  if (userRole !== "super") {
+    return res.status(403).json({ message: "Unauthorized" });
+  }
   const { username, password } = req.body;
   //   如果没有传入密码，则默认密码为adminadmin
   if (!password) {
@@ -104,6 +114,10 @@ exports.createUser = async (req, res) => {
 };
 
 exports.resetPassword = async (req, res) => {
+  const userRole = req.userRole;
+  if (userRole !== "super") {
+    return res.status(403).json({ message: "Unauthorized" });
+  }
   password = "adminadmin";
   try {
     const hashedPassword = await bcrypt.hash(password, 10);

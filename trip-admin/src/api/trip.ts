@@ -1,5 +1,4 @@
-// src/api/trip.ts
-import request from "@/utils/request"; // 假设你已经有了一个配置好的axios实例
+import request from "@/utils/request";
 
 // 定义接口返回类型（根据你的实际数据结构调整）
 interface TripListResponse {

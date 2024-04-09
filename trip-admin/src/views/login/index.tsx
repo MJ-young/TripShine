@@ -2,16 +2,32 @@
 import React, { useState } from "react";
 import { Form, Input, Button, Checkbox } from "antd";
 import { UserOutlined, LockOutlined } from "@ant-design/icons";
+import { login } from "@/api/login";
+import { useDispatch } from "react-redux";
+import { setUser } from "@/store/actions";
 
 export default function LoginPage() {
   const [form] = Form.useForm();
   const [loading, setLoading] = useState(false);
+  const dispatch = useDispatch();
 
   const onFinish = () => {
     setLoading(true);
-    setTimeout(() => {
-      setLoading(false);
-    }, 1000);
+    login(form.getFieldsValue())
+      .then((response) => {
+        console.log("login success:", response);
+        setLoading(false);
+        // 触发SET_USER action
+        const payload = {
+          user: response.userInfo,
+          token: response.token,
+        };
+        dispatch(setUser(payload));
+      })
+      .catch((error) => {
+        console.error("login failed:", error);
+        setLoading(false);
+      });
   };
 
   return (
