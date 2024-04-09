@@ -1,7 +1,7 @@
 import axios from "axios";
 import { notification, Modal, message } from "antd";
 // import store from "@/store";
-import Config from "react-native-config";
+// import Config from "react-native-config";
 import { getToken } from "./auth";
 
 export const isRelogin = { show: false };
@@ -10,8 +10,8 @@ axios.defaults.headers["Content-Type"] = "application/json;charset=utf-8";
 
 // 创建axios实例
 const service = axios.create({
-  baseURL: Config.API_URL, // API的基础URL
-  timeout: 5000, // 请求超时时间
+  baseURL: "http://localhost:3000", // API的基础URL
+  // timeout: 5000, // 请求超时时间
 });
 
 // 请求拦截器
