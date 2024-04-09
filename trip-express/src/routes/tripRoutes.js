@@ -25,7 +25,7 @@ router.get("/status/:status", checkAuth, tripController.getTripByStatus); // 通
 // router.post("/like/:id", tripController.likeTrip); // 使用URL参数传递游记ID
 
 // 逻辑删除游记
-router.delete("/audit/del/:id", checkAuth, tripController.deleteAuditTrip); // 使用DELETE方法，并通过URL参数传递ID
+router.put("/audit/del/:id", checkAuth, tripController.deleteAuditTrip);
 // 审核通过游记
 router.put("/audit/pass/:id", checkAuth, tripController.passAuditTrip); // 使用PUT方法，并通过URL参数传递ID
 // 审核拒绝游记

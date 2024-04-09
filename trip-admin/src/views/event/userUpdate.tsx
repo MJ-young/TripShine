@@ -1,5 +1,5 @@
 // 在React组件中
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
 const UserUpdate = () => {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars

@@ -180,7 +180,6 @@ exports.deleteAuditTrip = async (req, res) => {
     }
     await Trip.findByIdAndUpdate(req.params.id, {
       isDeleted: true,
-      deleteReason: req.query.deleteReason,
     });
     res.status(200).json({ message: "游记已删除" });
   } catch (error) {
@@ -216,6 +215,7 @@ exports.rejectAuditTrip = async (req, res) => {
       auditStatus: "reject",
       auditTime: Date.now(),
       auditor: req.query.userId,
+      rejectReason: req.query.rejectReason,
     });
     res.status(200).json({ message: "拒绝通过" });
   } catch (error) {

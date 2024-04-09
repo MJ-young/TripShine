@@ -1,4 +1,3 @@
-import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import routes from "@/router"; // 确保路径正确
 import MainLayout from "@views/MainLayout"; // 假设你已经创建了MainLayout组件

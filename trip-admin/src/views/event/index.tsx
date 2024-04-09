@@ -1,5 +1,5 @@
 // TravelogueCounts.js
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import UserUpdate from "./userUpdate";
 import useSSE from "@/utils/useSSE";
 

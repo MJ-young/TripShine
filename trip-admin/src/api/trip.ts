@@ -12,6 +12,11 @@ interface FetchTripsParams {
   pageSize: number;
 }
 
+interface RejectTripParams {
+  id: string;
+  reason: string;
+}
+
 // 定义旅行日记类型
 export interface Trip {
   id: string;
@@ -46,9 +51,20 @@ export const passTrip = (id: string): Promise<unknown> => {
 };
 
 // 封装拒绝的函数
-export const rejectTrip = (id: string): Promise<unknown> => {
+export const rejectTrip = (params: RejectTripParams): Promise<unknown> => {
   return request({
-    url: `/api/trip/audit/reject/${id}`,
+    url: `/api/trip/audit/reject/${params.id}`,
+    method: "put",
+    params: {
+      reason: params.reason,
+    },
+  });
+};
+
+// 删除旅行日记
+export const deleteTrip = (id: string): Promise<unknown> => {
+  return request({
+    url: `/api/trip/audit/del/${id}`,
     method: "put",
   });
 };

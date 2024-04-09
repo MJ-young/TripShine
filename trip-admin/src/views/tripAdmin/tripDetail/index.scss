@@ -1,0 +1,12 @@
+.swiper-container {
+    width: 100%;
+    height: 400px; /* 根据需要调整高度 */
+  }
+  .swiper-image {
+    width: 100%;
+    height: 300px;
+    object-fit: contain; /* 或者使用其他值，如cover、contain、fill等，根据需要 */
+  }
+  .swiper-slide {
+    height: 400px; /* 你期望的高度 */
+  }
