@@ -1,7 +1,5 @@
 import axios from "axios";
 import { notification, Modal, message } from "antd";
-// import store from "@/store";
-// import Config from "react-native-config";
 import { getToken } from "./auth";
 
 export const isRelogin = { show: false };
@@ -18,7 +16,7 @@ const service = axios.create({
 service.interceptors.request.use(
   (config) => {
     // 是否需要设置 token
-    // const isToken = (config.headers || {}).isToken === false;
+    const isToken = (config.headers || {}).isToken === false;
     if (getToken()) {
       config.headers["Authorization"] = "Bearer " + getToken(); // 设置请求头的Authorization
     }

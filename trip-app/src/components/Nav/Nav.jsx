@@ -7,7 +7,8 @@ import Home from "@views/home/index";
 import User from "@views/user/index";
 import CardPublish from "@views/publish/index";
 import CardDetail from "@views/card/CardDetail";
-import Login from "@views/login/index";
+import Login from "@views/login/login";
+import Register from "@views/login/register";
 
 import icon_tab_publish from "@/assets/icon_tab_publish.png";
 

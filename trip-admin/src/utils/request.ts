@@ -12,7 +12,7 @@ axios.defaults.headers["Content-Type"] = "application/json;charset=utf-8";
 // 创建axios实例
 const service = axios.create({
   baseURL: "", // API的基础URL
-  timeout: 5000, // 请求超时时间
+  // timeout: 5000, // 请求超时时间
 });
 
 // 请求拦截器

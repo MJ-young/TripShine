@@ -32,10 +32,7 @@ const userInfo = {
 
 export default function User() {
   const [bgImgHeight, setBgImgHeight] = useState(180);
-  // const {userInfo} = UserStore;
   const [tabIndex, setTabIndex] = useState(0);
-  // const sideMenuRef = useRef < SideMenuRef > (null)
-  // const store = useLocalStore(() => new MineStore())
   const [passTrips, setPassTrips] = useState([]);
   const [waitTrips, setWaitTrips] = useState([]);
   const [rejectTrips, setRejectTrips] = useState([]);
