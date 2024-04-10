@@ -2,11 +2,21 @@ const Trip = require("../models/trip");
 const upload = require("../utils/upload");
 const multer = require("multer");
 const { deleteFilesFromOSS } = require("../utils/ossService");
+const User = require("../models/user");
+const { base64ToBlob } = require("../utils/base64ToBlob");
 
 // 创建游记
 exports.createTrip = async (req, res) => {
   try {
-    const newTrip = new Trip(req.body);
+    const userId = req.userId;
+    const user = User.findById(userId);
+    const tripData = {
+      ...req.body,
+      userId: userId,
+      username: user.username,
+      avatar: user.avatar,
+    };
+    const newTrip = new Trip(tripData);
     const savedTrip = await newTrip.save();
     res.status(201).json({ data: savedTrip });
   } catch (error) {
@@ -262,8 +272,8 @@ exports.getTripByAuditStatus = async (req, res) => {
 
 // 上传游记图片列表或视频
 exports.uploadTripMedia = (req, res) => {
-  // 使用multer的single方法处理单个文件上传
-  // 文件字段名假设为'file'
+  // req.file 是base64字符串
+  // const blob = base64ToBlob(req.file);
   upload.single("file")(req, res, function (err) {
     if (err instanceof multer.MulterError) {
       // 发生错误

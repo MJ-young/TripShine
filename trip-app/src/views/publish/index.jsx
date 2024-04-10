@@ -5,6 +5,7 @@ import ImageUploader from "./components/ImageUploader";
 import UniPopup from "./components/UniPopup";
 import { useFormik } from "formik";
 import * as yup from "yup";
+import { createTrip } from "@/api/trip";
 
 const validationSchema = yup.object({
   title: yup.string("Enter the title").required("Title is required"),
@@ -38,7 +39,13 @@ const CardPublish = ({ route }) => {
 
   const handlePublish = async (values) => {
     console.log("Publishing:", values);
-    // Implement publish logic here
+    createTrip(values)
+      .then(() => {
+        setShowPopup(true);
+      })
+      .catch((error) => {
+        console.error("Error publishing:", error);
+      });
   };
 
   const hidePopup = () => {
@@ -46,7 +53,7 @@ const CardPublish = ({ route }) => {
   };
 
   return (
-    <Box sx={{ width: "100%", padding: 2 }}>
+    <Box sx={{ width: "85%", padding: 2 }}>
       <form onSubmit={formik.handleSubmit}>
         <TextField
           fullWidth

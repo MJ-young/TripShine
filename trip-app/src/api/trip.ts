@@ -12,12 +12,13 @@ interface FetchTripsParams {
 
 // 定义旅行日记类型
 export interface Trip {
-  id: string;
+  _id: string;
   title: string;
   content: string;
+  images: string[];
   username: string;
   auditStatus: string;
-  createdAt: string;
+  createdTime: string;
   // 其他字段...
 }
 
@@ -40,5 +41,18 @@ export const searchTrips = (
     url: `/api/trip/search`,
     method: "get",
     params,
+  });
+};
+
+// 创建旅行日记
+export const createTrip = (params: {
+  title: string;
+  content: string;
+  images: string[];
+}): Promise<Trip> => {
+  return request({
+    url: "/api/trip/",
+    method: "post",
+    data: params,
   });
 };

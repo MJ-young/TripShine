@@ -10,6 +10,7 @@ import {
 } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 import { Popconfirm, Button, message } from "antd";
+import { uploadImage } from "@/utils/upload";
 
 const ImageUploader = ({ images, setImages }) => {
   const [previewImage, setPreviewImage] = useState(null);
@@ -20,8 +21,11 @@ const ImageUploader = ({ images, setImages }) => {
       allowsEditing: true,
       quality: 1,
     });
+    console.log(result);
     if (!result.canceled) {
-      setImages([...images, result.uri]);
+      const imgData = result.assets[0];
+      const url = await uploadImage(imgData.uri, imgData.fileName);
+      setImages([...images, url]);
     }
   };
 
@@ -38,7 +42,7 @@ const ImageUploader = ({ images, setImages }) => {
 
   return (
     <View>
-      <Text style={styles.text}>点击可预览选好的图片</Text>
+      <Text style={styles.text}>点击可预览选择的图片</Text>
       <Text style={styles.text}>{images.length}/9</Text>
       <View style={styles.imageContainer}>
         {images.map((image, index) => (
@@ -47,10 +51,10 @@ const ImageUploader = ({ images, setImages }) => {
               <Image source={{ uri: image }} style={styles.image} />
             </TouchableOpacity>
             <Button
-              onPress={() => deleteImage(index)}
+              onClick={() => deleteImage(index)}
               style={styles.deleteButton}
             >
-              删除
+              X
             </Button>
           </View>
         ))}

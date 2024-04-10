@@ -1,63 +1,62 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Image, Button } from 'react-native';
+import React from "react";
+import { Box, Modal, Typography, Button } from "@mui/material";
+import WarningIcon from "@mui/icons-material/Warning"; // Using MUI icon for demonstration
 
 export default function UniPopup({ show, onHidePopup }) {
-    const hide = () => {
-        onHidePopup();
-    };
+  const hide = () => {
+    onHidePopup();
+  };
 
-    return (
-        <View>
-            {show && (
-                <TouchableOpacity style={styles.mask} onPress={hide}>
-                    <View style={styles.popup}>
-                        {/* <Text>{msg}</Text> */}
-                        {/* Render additional content here */}
-                        <View style={styles.imageContainer}>
-                            <Image source={require('../../../assets/warn.png')} style={styles.image} resizeMode="contain" />
-                        </View>
-                        {/* <Image source={require('../../assets/warn.png')} style={styles.image} resizeMode="contain" /> */}
-                        <View style={styles.info}>
-                            <Text>1.涉及黄色，政治，广告及骚扰信息</Text>
-                            <Text>2.涉及黄色，政治，广告及骚扰信息</Text>
-                            <Text>3.涉及黄色，政治，广告及骚扰信息</Text>
-                            <Text>4.涉及黄色，政治，广告及骚扰信息</Text>
-                        </View>
-                        <Button title="俺晓得了" onPress={hide} color="#dc630c" />
-                    </View>
-                </TouchableOpacity>
-            )}
-        </View>
-    );
+  return (
+    <Modal
+      open={show}
+      onClose={hide}
+      aria-labelledby="simple-modal-title"
+      aria-describedby="simple-modal-description"
+      sx={{ display: "flex", alignItems: "center", justifyContent: "center" }}
+    >
+      <Box sx={styles.popup}>
+        <Box sx={styles.imageContainer}>
+          <WarningIcon sx={{ fontSize: 80, mb: 2 }} color="error" />
+        </Box>
+        <Box sx={styles.info}>
+          <Typography variant="body1">1. 涉及黄色信息</Typography>
+          <Typography variant="body1">2. 涉及政治信息</Typography>
+          <Typography variant="body1">3. 涉及广告信息</Typography>
+          <Typography variant="body1">4. 涉及骚扰信息</Typography>
+        </Box>
+        <Button
+          onClick={hide}
+          variant="contained"
+          color="primary"
+          sx={{ mt: 2 }}
+        >
+          俺晓得了
+        </Button>
+      </Box>
+    </Modal>
+  );
 }
 
-const styles = StyleSheet.create({
-    mask: {
-        position: 'fixed',
-        zIndex: 999,
-        top: 0,
-        right: 0,
-        bottom: 0,
-        left: 0,
-        backgroundColor: 'rgba(0, 0, 0, 0.3)',
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
-    popup: {
-        backgroundColor: '#ffffff',
-        padding: 20,
-        borderRadius: 10,
-    },
-    imageContainer: {
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
-    image: {
-        width: 100,
-        height: 100,
-        marginBottom: 10,
-    },
-    info: {
-        marginBottom: 10,
-    },
-});
+const styles = {
+  popup: {
+    position: "absolute",
+    backgroundColor: "background.paper",
+    border: "2px solid #000",
+    boxShadow: 24,
+    p: 4,
+    borderRadius: 2,
+    width: "60%", // 可调整为所需百分比
+    maxWidth: 300, // 可调整为所需最大宽度
+    textAlign: "center",
+  },
+  imageContainer: {
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  info: {
+    mt: 2,
+    mb: 2,
+  },
+};
