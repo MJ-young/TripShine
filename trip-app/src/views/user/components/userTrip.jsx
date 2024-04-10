@@ -65,7 +65,7 @@ const UserTrip = () => {
   }, []);
 
   const handleItemClick = (diary) => {
-    navigation.push("TripDetail", diary);
+    navigation.push("TripForm", diary);
   };
 
   return (

@@ -1,6 +1,5 @@
 import axios from "axios";
 import { notification, Modal, message } from "antd";
-import { useNavigate } from "react-router-dom";
 import { getToken } from "@/utils/auth";
 import { useDispatch } from "react-redux";
 import { clearUser } from "@/store/actions";
@@ -45,11 +44,10 @@ service.interceptors.response.use(
     return res.data;
   },
   (error) => {
-    console.error("err" + error);
+    console.error("err:" + error);
     if (error.response.status) {
-      const msg = error.response.data.message;
-      const dispatch = useDispatch();
-      const navigation = useNavigate();
+      console.error(error.response);
+      const msg = error.response.data.message || "An unexpected error occurred";
       switch (error.response.status) {
         case 401:
           if (isRelogin.show) {
@@ -63,8 +61,7 @@ service.interceptors.response.use(
             okText: "重新登录",
             cancelText: "取消",
             onOk() {
-              dispatch(clearUser());
-              // navigation("/");
+              clearUser();
               isRelogin.show = false;
             },
             onCancel() {

@@ -34,7 +34,7 @@ exports.loginAdmin = async (req, res) => {
     res.status(200).json({ message: "Login successful", token, userInfo });
   } catch (error) {
     console.log(error);
-    res.status(500).json({
+    return res.status(500).json({
       message: "Failed to login",
     });
   }
@@ -45,7 +45,7 @@ exports.logoutAdmin = async (req, res) => {
     // req.session.destroy();
     res.status(200).json({ message: "Logout successful" });
   } catch (error) {
-    res.status(500).json({ message: "Failed to logout" });
+    return res.status(500).json({ message: "Failed to logout" });
   }
 };
 
@@ -59,14 +59,21 @@ exports.getAllUsers = async (req, res) => {
   const skip = (page - 1) * limit;
   try {
     // 不返回密码字段
-    const users = await Admin.find({}, { password: 0 }).skip(skip).limit(limit);
+    const users = await Admin.find(
+      {
+        role: "common",
+      },
+      { password: 0 }
+    )
+      .skip(skip)
+      .limit(limit);
     const total = await Admin.countDocuments();
     if (skip >= total) {
       throw new Error("页码超出范围");
     }
     res.status(200).json({ data: users, total });
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    return res.status(500).json({ message: error.message });
   }
 };
 
@@ -79,7 +86,7 @@ exports.deleteUser = async (req, res) => {
     await Admin.findByIdAndDelete(req.params.id);
     res.status(200).json({ message: "User deleted" });
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    return res.status(500).json({ message: error.message });
   }
 };
 
@@ -109,7 +116,7 @@ exports.createUser = async (req, res) => {
     };
     res.status(201).json({ message: "User created", userInfo });
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    return res.status(500).json({ message: error.message });
   }
 };
 
@@ -124,6 +131,6 @@ exports.resetPassword = async (req, res) => {
     await Admin.findByIdAndUpdate(req.params.id, { password: hashedPassword });
     res.status(200).json({ message: "Password reset" });
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    return res.status(500).json({ message: error.message });
   }
 };

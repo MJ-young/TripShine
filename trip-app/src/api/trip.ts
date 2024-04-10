@@ -27,16 +27,16 @@ export const getAllPassTrips = (
   params: FetchTripsParams
 ): Promise<TripListResponse> => {
   return request({
-    url: `/api/trip/`,
+    url: `/api/trip/list`,
     method: "get",
     params,
   });
 };
 
 // 关键词搜索旅行日记
-export const searchTrips = (
-  params: FetchTripsParams & { keyword: string }
-): Promise<TripListResponse> => {
+export const searchTrips = (params: {
+  keyword: string;
+}): Promise<TripListResponse> => {
   return request({
     url: `/api/trip/search`,
     method: "get",
@@ -54,5 +54,28 @@ export const createTrip = (params: {
     url: "/api/trip/",
     method: "post",
     data: params,
+  });
+};
+
+// 更新旅行日记
+export const updateTrip = (params: {
+  _id: string;
+  title: string;
+  content: string;
+  images: string[];
+}): Promise<Trip> => {
+  console.log(params);
+  return request({
+    url: `/api/trip/${params._id}`,
+    method: "put",
+    data: params,
+  });
+};
+
+// 删除旅行日记
+export const deleteTrip = (id: string): Promise<void> => {
+  return request({
+    url: `/api/trip/${id}`,
+    method: "delete",
   });
 };

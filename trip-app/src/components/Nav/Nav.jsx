@@ -11,7 +11,7 @@ import Login from "@views/login/login";
 import Register from "@views/login/register";
 
 import icon_tab_publish from "@/assets/icon_tab_publish.png";
-import TripDetail from "@/views/trip/tripDetail";
+import TripForm from "@/views/trip/tripFrom";
 
 const Tab = createBottomTabNavigator();
 const ListStack = createNativeStackNavigator();
@@ -41,10 +41,7 @@ function UserStackScreen() {
           title: "User",
         }}
       ></ListStack.Screen>
-      <ListStack.Screen
-        name="TripDetail"
-        component={CardDetail}
-      ></ListStack.Screen>
+      <ListStack.Screen name="TripForm" component={TripForm}></ListStack.Screen>
     </ListStack.Navigator>
   );
 }
@@ -85,7 +82,7 @@ export default function Nav() {
           ),
         }}
       />
-      <Tab.Screen
+      {/* <Tab.Screen
         name="Login"
         component={Login}
         options={{
@@ -94,7 +91,7 @@ export default function Nav() {
             <MaterialCommunityIcons name="login" color={color} size={size} />
           ),
         }}
-      />
+      /> */}
     </Tab.Navigator>
   );
 }

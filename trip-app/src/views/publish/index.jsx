@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Button, TextField, Box, Typography } from "@mui/material";
 import NavBar from "./components/NavBar";
-import ImageUploader from "./components/ImageUploader";
+import ImageUploader from "@/components/ImageUploader";
 import UniPopup from "./components/UniPopup";
 import { useFormik } from "formik";
 import * as yup from "yup";

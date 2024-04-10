@@ -6,13 +6,16 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { Provider } from "react-redux";
 import store from "store";
 import Nav from "@components/Nav/Nav";
+import Login from "@views/login/login";
+import { getToken } from "@/utils/auth";
+
+const Stack = createNativeStackNavigator();
+const token = getToken();
 
 function App() {
   return (
     <Provider store={store}>
-      <NavigationContainer>
-        <Nav></Nav>
-      </NavigationContainer>
+      <NavigationContainer>{token ? <Nav /> : <Login />}</NavigationContainer>
     </Provider>
   );
 }

@@ -15,20 +15,21 @@ const Home = ({ navigation }) => {
   const fetchInitialTrips = async () => {
     try {
       const response = await getAllPassTrips();
-      setTrips(response.data);
+      setTrips([...response.data]);
     } catch (error) {
       console.error("Error fetching initial trips:", error);
     }
   };
 
   const handleSearch = async (keyword) => {
-    if (!keyword.trim()) {
-      fetchInitialTrips(); // Fetch all trips if keyword is empty
-      return;
+    console.log("Searching trips with keyword:", keyword);
+    if (!keyword) {
+      fetchInitialTrips();
     }
     try {
-      const response = await searchTrips(keyword);
-      setTrips(response.data);
+      searchTrips({ keyword }).then((response) => {
+        setTrips([...response.data]);
+      });
     } catch (error) {
       console.error("Error searching trips:", error);
     }

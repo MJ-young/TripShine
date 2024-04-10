@@ -44,7 +44,7 @@ exports.registerUser = async (req, res) => {
       });
     });
   } catch (error) {
-    res.status(500).json({ message: "Failed to register user" });
+    return res.status(500).json({ message: "Failed to register user" });
   }
 };
 
@@ -82,7 +82,7 @@ exports.loginUser = async (req, res) => {
     });
   } catch (error) {
     console.log(error);
-    res.status(500).json({
+    return res.status(500).json({
       message: "Failed to login",
     });
   }
@@ -93,7 +93,7 @@ exports.logoutUser = async (req, res) => {
     // req.session.destroy();
     res.status(200).json({ message: "Logout successful" });
   } catch (error) {
-    res.status(500).json({ message: "Failed to logout" });
+    return res.status(500).json({ message: "Failed to logout" });
   }
 };
 
@@ -130,7 +130,7 @@ exports.uploadAvatar = async (req, res) => {
       res.status(200).json({ url: file.url, message: "上传成功" });
     });
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    return res.status(500).json({ message: error.message });
   }
 };
 
@@ -147,5 +147,5 @@ exports.updateUserInfo = async (req, res) => {
   // } catch (error) {
   //   res.status(500).json({ message: "Failed to update user info" });
   // }
-  res.status(200).json({ message: "接口正在开发" });
+  return res.status(200).json({ message: "接口正在开发" });
 };

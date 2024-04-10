@@ -2,29 +2,37 @@ const jwt = require("jsonwebtoken");
 const { secretKey } = require("../config/secret");
 
 const checkAuth = (req, res, next) => {
-  const token = req.headers.authorization;
+  const authHeader = req.headers.authorization;
 
-  if (!token) {
+  if (!authHeader || !authHeader.startsWith("Bearer ")) {
     return res.status(401).json({
       data: {
-        code: 401,
-        message: "Unauthorized",
+        status: 401,
+        message: "Unauthorized - No token provided",
       },
     });
   }
 
-  jwt.verify(token.split(" ")[1], secretKey, (err, decoded) => {
+  const token = authHeader.split(" ")[1];
+  jwt.verify(token, secretKey, (err, decoded) => {
     if (err) {
-      console.log(err);
-      return res.status(401).json({
-        data: {
-          code: 401,
-          message: "Unauthorized",
-        },
-      });
+      if (err.name === "TokenExpiredError") {
+        return res.status(401).json({
+          data: {
+            status: 401,
+            message: "Token has expired",
+          },
+        });
+      } else {
+        return res.status(401).json({
+          data: {
+            status: 401,
+            message: "Unauthorized",
+          },
+        });
+      }
     }
 
-    // 根据decoded中的信息来识别和验证用户身份
     req.userId = decoded.userId;
     req.userRole = decoded.userRole;
     next();

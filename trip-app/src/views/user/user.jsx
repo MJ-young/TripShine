@@ -247,14 +247,14 @@ export default function User() {
             <Image
               style={styles.settingImg}
               source={icon_edit}
-              tintColor="white"
+              tintColor={"white"}
             />
           </TouchableOpacity>
           <TouchableOpacity style={styles.infoButton}>
             <Image
               style={styles.settingImg}
               source={icon_setting}
-              tintColor="white"
+              tintColor={"white"}
             />
           </TouchableOpacity>
         </View>

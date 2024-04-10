@@ -11,6 +11,7 @@ import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
 import Typography from "@mui/material/Typography";
 import CircularProgress from "@mui/material/CircularProgress";
+import { useNavigation } from "@react-navigation/native";
 
 const Login = () => {
   const [form, setForm] = useState({
@@ -20,6 +21,7 @@ const Login = () => {
   });
   const [loading, setLoading] = useState(false);
   const dispatch = useDispatch();
+  const navigation = useNavigation();
 
   const handleChange = (event) => {
     const { name, value, checked } = event.target;
@@ -52,6 +54,7 @@ const Login = () => {
         Cookies.remove("remember");
       }
       // 跳转到主页逻辑
+      // navigation.navigate("Home");
     } catch (error) {
       console.error("login failed:", error);
     } finally {
@@ -80,6 +83,7 @@ const Login = () => {
     <Box
       sx={{
         display: "flex",
+        width: "100%",
         flexDirection: "column",
         alignItems: "center",
         justifyContent: "center",

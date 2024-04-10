@@ -18,9 +18,9 @@ exports.createTrip = async (req, res) => {
     };
     const newTrip = new Trip(tripData);
     const savedTrip = await newTrip.save();
-    res.status(201).json({ data: savedTrip });
+    return res.status(201).json({ data: savedTrip });
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    return res.status(500).json({ message: error.message });
   }
 };
 
@@ -47,7 +47,7 @@ exports.getAllTrips = async (req, res) => {
     }
     res.status(200).json({ data: trips, total });
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    return res.status(500).json({ message: error.message });
   }
 };
 
@@ -61,7 +61,7 @@ exports.getTripDetail = async (req, res) => {
       res.status(404).json({ message: "游记不存在" });
     }
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    return res.status(500).json({ message: error.message });
   }
 };
 
@@ -79,9 +79,9 @@ exports.updateTrip = async (req, res) => {
     const updatedTrip = await Trip.findByIdAndUpdate(req.params.id, req.body, {
       new: true,
     });
-    res.status(200).json({ data: updatedTrip });
+    return res.status(200).json({ data: updatedTrip });
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    return res.status(500).json({ message: error.message });
   }
 };
 
@@ -115,13 +115,14 @@ exports.deleteTrip = async (req, res) => {
     // 返回成功删除游记的响应
     res.status(200).json({ message: "游记及其图片已删除" });
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    return res.status(500).json({ message: error.message });
   }
 };
 
 // 通过关键词搜索游记
 exports.searchTrip = async (req, res) => {
   try {
+    console.log(req);
     // 使用正则表达式进行模糊搜索,搜索标题中包含关键词的游记
     const titleTrips = await Trip.find({
       title: { $regex: req.query.keyword },
@@ -138,7 +139,7 @@ exports.searchTrip = async (req, res) => {
     const trips = [...titleTrips, ...userTrips];
     res.status(200).json({ data: trips });
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    return res.status(500).json({ message: error.message });
   }
 };
 
@@ -177,7 +178,7 @@ exports.getTripByStatus = async (req, res) => {
       .limit(limit);
     res.status(200).json({ data: trips, total });
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    return res.status(500).json({ message: error.message });
   }
 };
 
@@ -193,7 +194,7 @@ exports.deleteAuditTrip = async (req, res) => {
     });
     res.status(200).json({ message: "游记已删除" });
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    return res.status(500).json({ message: error.message });
   }
 };
 
@@ -211,7 +212,7 @@ exports.passAuditTrip = async (req, res) => {
     });
     res.status(200).json({ message: "审核通过" });
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    return res.status(500).json({ message: error.message });
   }
 };
 
@@ -229,7 +230,7 @@ exports.rejectAuditTrip = async (req, res) => {
     });
     res.status(200).json({ message: "拒绝通过" });
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    return res.status(500).json({ message: error.message });
   }
 };
 
@@ -266,7 +267,7 @@ exports.getTripByAuditStatus = async (req, res) => {
       .limit(limit);
     res.status(200).json({ data: trips });
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    return res.status(500).json({ message: error.message });
   }
 };
 
@@ -285,7 +286,6 @@ exports.uploadTripMedia = (req, res) => {
 
     // 上传成功，req.file 包含了文件的信息
     const file = req.file;
-    console.log(file);
 
     res.status(200).json({ url: file.url, message: "上传成功" });
   });
