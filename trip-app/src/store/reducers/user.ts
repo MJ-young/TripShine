@@ -1,9 +1,11 @@
 // src/store/reducers/userReducer.js
 
 import { SET_USER, UPDATE_USER, CLEAR_USER } from "../actions";
+import { getToken } from "../../utils/auth";
 
 const initialState = {
-  user: null,
+  user: {},
+  token: getToken(),
 };
 
 const userReducer = (state = initialState, action) => {
@@ -11,7 +13,8 @@ const userReducer = (state = initialState, action) => {
     case SET_USER:
       return {
         ...state,
-        user: action.payload,
+        user: action.payload.user,
+        token: action.payload.token,
       };
     case UPDATE_USER:
       return {
@@ -22,6 +25,7 @@ const userReducer = (state = initialState, action) => {
       return {
         ...state,
         user: null,
+        token: "",
       };
     default:
       return state;
