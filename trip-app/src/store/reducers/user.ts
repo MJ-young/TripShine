@@ -1,7 +1,5 @@
-// src/store/reducers/userReducer.js
-
 import { SET_USER, UPDATE_USER, CLEAR_USER } from "../actions";
-import { getToken } from "../../utils/auth";
+import { getToken } from "@/utils/auth";
 
 const initialState = {
   user: {},

@@ -23,8 +23,24 @@ exports.registerUser = async (req, res) => {
       const hashedPassword = await bcrypt.hash(password, 10);
       const newUser = new User({ username, password: hashedPassword });
       await newUser.save();
+      // 生成token
+      const payload = {
+        userId: newUser._id,
+        userRole: "user", // 假设用户模型中包含角色信息
+      };
+      const token = jwt.sign(payload, secretKey, {
+        // 测试时设置token过期时间为2分钟
+        expiresIn: "24h",
+      });
+      const userInfo = {
+        userId: newUser._id,
+        username: newUser.username,
+        avatar: newUser.avatar,
+      };
       res.status(200).json({
         message: "User registered successfully",
+        data: { userInfo },
+        token,
       });
     });
   } catch (error) {
@@ -57,7 +73,12 @@ exports.loginUser = async (req, res) => {
         // 测试时设置token过期时间为2分钟
         expiresIn: "24h",
       });
-      res.status(200).json({ message: "Login successful", token });
+      const userInfo = {
+        userId: user._id,
+        username: user.username,
+        avatar: user.avatar,
+      };
+      res.status(200).json({ message: "Login successful", token, userInfo });
     });
   } catch (error) {
     console.log(error);

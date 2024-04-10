@@ -1,6 +1,9 @@
 import axios from "axios";
 import { notification, Modal, message } from "antd";
-import { getToken } from "./auth";
+import { useNavigate } from "react-router-dom";
+import { getToken } from "@/utils/auth";
+import { useDispatch } from "react-redux";
+import { clearUser } from "@/store/actions";
 
 export const isRelogin = { show: false };
 
@@ -8,8 +11,8 @@ axios.defaults.headers["Content-Type"] = "application/json;charset=utf-8";
 
 // 创建axios实例
 const service = axios.create({
-  baseURL: "http://localhost:3000", // API的基础URL
-  // timeout: 5000, // 请求超时时间
+  baseURL: "http://localhost:3000", // api的base_url
+  timeout: 5000, // 请求超时时间
 });
 
 // 请求拦截器
@@ -17,7 +20,7 @@ service.interceptors.request.use(
   (config) => {
     // 是否需要设置 token
     const isToken = (config.headers || {}).isToken === false;
-    if (getToken()) {
+    if (getToken() && !isToken) {
       config.headers["Authorization"] = "Bearer " + getToken(); // 设置请求头的Authorization
     }
     return config;
@@ -45,6 +48,8 @@ service.interceptors.response.use(
     console.error("err" + error);
     if (error.response.status) {
       const msg = error.response.data.message;
+      const dispatch = useDispatch();
+      const navigation = useNavigate();
       switch (error.response.status) {
         case 401:
           if (isRelogin.show) {
@@ -58,9 +63,9 @@ service.interceptors.response.use(
             okText: "重新登录",
             cancelText: "取消",
             onOk() {
-              //   store.dispatch("LogOut").then(() => {
-              //     location.href = "/";
-              //   });
+              dispatch(clearUser());
+              // navigation("/");
+              isRelogin.show = false;
             },
             onCancel() {
               isRelogin.show = false;

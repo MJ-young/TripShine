@@ -11,6 +11,7 @@ import Login from "@views/login/login";
 import Register from "@views/login/register";
 
 import icon_tab_publish from "@/assets/icon_tab_publish.png";
+import TripDetail from "@/views/trip/tripDetail";
 
 const Tab = createBottomTabNavigator();
 const ListStack = createNativeStackNavigator();
@@ -26,15 +27,29 @@ function ListStackScreen() {
         }}
       ></ListStack.Screen>
       <ListStack.Screen name="Detail" component={CardDetail}></ListStack.Screen>
-      <ListStack.Screen name="User" component={User}></ListStack.Screen>
-      <ListStack.Screen name="CardPublish" component={CardPublish}></ListStack.Screen>
+    </ListStack.Navigator>
+  );
+}
 
+function UserStackScreen() {
+  return (
+    <ListStack.Navigator>
+      <ListStack.Screen
+        name="UserPage"
+        component={User}
+        options={{
+          title: "User",
+        }}
+      ></ListStack.Screen>
+      <ListStack.Screen
+        name="TripDetail"
+        component={CardDetail}
+      ></ListStack.Screen>
     </ListStack.Navigator>
   );
 }
 
 export default function Nav() {
-
   return (
     <Tab.Navigator screenOptions={{ tabBarActiveTintColor: "#222222" }}>
       <Tab.Screen
@@ -62,9 +77,9 @@ export default function Nav() {
       />
       <Tab.Screen
         name="User"
-        component={User}
+        component={UserStackScreen}
         options={{
-          title: "User",
+          headerShown: false,
           tabBarIcon: ({ color, size }) => (
             <MaterialCommunityIcons name="account" color={color} size={size} />
           ),
@@ -80,7 +95,6 @@ export default function Nav() {
           ),
         }}
       />
-
     </Tab.Navigator>
   );
 }

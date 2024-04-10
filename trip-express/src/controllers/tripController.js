@@ -32,7 +32,7 @@ exports.getAllTrips = async (req, res) => {
       auditStatus: "pass",
       isDeleted: false,
     });
-    if (skip >= total) {
+    if (skip >= total && total !== 0) {
       return res.status(404).json({ message: "页码超出范围" });
     }
     res.status(200).json({ data: trips, total });
@@ -152,7 +152,7 @@ exports.getTripByStatus = async (req, res) => {
         req.params.status === "all" ? { $ne: null } : req.params.status,
       isDeleted: false,
     });
-    if (skip >= total) {
+    if (skip >= total && total !== 0) {
       return res.status(404).json({ message: "页码超出范围" });
     }
     const trips = await Trip.find({
@@ -243,7 +243,7 @@ exports.getTripByAuditStatus = async (req, res) => {
         req.params.status === "all" ? { $ne: null } : req.params.status,
       isDeleted: false,
     });
-    if (skip >= total) {
+    if (skip >= total && total !== 0) {
       return res.status(404).json({ message: "页码超出范围" });
     }
     const trips = await Trip.find({

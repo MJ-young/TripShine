@@ -9,14 +9,12 @@ import {
   TouchableOpacity,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
-import { getAllPassTrips } from "../../api/allTrip";
-
+import { getAllPassTrips } from "@/api/allTrip";
 
 // import Share from 'react-native-share';
 
 const { width } = Dimensions.get("window");
 const COLUMN_COUNT = 2;
-
 
 const Card = ({ title, image, authorName, authorAvatar, onPress }) => (
   <TouchableOpacity style={styles.card} onPress={onPress}>
@@ -27,7 +25,6 @@ const Card = ({ title, image, authorName, authorAvatar, onPress }) => (
       <Text style={styles.authorName}>{authorName}</Text>
     </View>
   </TouchableOpacity>
-
 );
 
 const WaterfallList = () => {
@@ -35,7 +32,9 @@ const WaterfallList = () => {
   const [trips, setTrips] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  const [columns, setColumns] = useState(Array.from({ length: COLUMN_COUNT }, () => []));
+  const [columns, setColumns] = useState(
+    Array.from({ length: COLUMN_COUNT }, () => [])
+  );
 
   const loadData = async () => {
     getAllPassTrips()
@@ -122,7 +121,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 4,
     elevation: 5,
-    width: 170
+    width: 170,
   },
   image: {
     width: "100%",
