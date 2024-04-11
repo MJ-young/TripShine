@@ -11,7 +11,7 @@ const TripAdmin = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
   const [selectedTrip, setSelectedTrip] = useState<Trip | null>(null);
-  const userRole = Cookies.get("userRole");
+  const userRole = Cookies.get("adminRole");
 
   const loadData = async (pageNum = 1, pageSize = 10) => {
     setLoading(true);

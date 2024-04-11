@@ -1,92 +1,72 @@
 import React, { useState } from "react";
 import {
-  Box,
-  Typography,
-  Avatar,
-  IconButton,
-  ImageList,
-  ImageListItem,
-} from "@mui/material";
-import ShareIcon from "@mui/icons-material/Share";
+  View,
+  Text,
+  Image,
+  StyleSheet,
+  TouchableOpacity,
+  ScrollView,
+} from "react-native";
 import Swiper from "react-native-swiper";
+import icon_share from "@/assets/icon/icon_share.png";
 
 const TripDetail = ({ route }) => {
   const { title, content, username, avatar, images, createTime } = route.params;
+  const [activeIndex, setActiveIndex] = useState(0);
 
-  //   const settings = {
-  //     dots: true,
-  //     infinite: true,
-  //     speed: 500,
-  //     slidesToShow: 1,
-  //     slidesToScroll: 1,
-  //   };
-
+  const handleShare = () => {
+    // 在此处添加分享逻辑
+    console.log("分享功能待实现");
+  };
+  const onIndexChanged = (index) => {
+    setActiveIndex(index);
+  };
   return (
-    <Box sx={{ flexGrow: 1, bgcolor: "background.paper" }}>
-      {/* <Slider {...settings}>
-        {images.map((image, index) => (
-          <Box
-            key={index}
-            sx={{
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              height: 500,
-            }}
-          >
-            <img
-              src={image}
-              alt={`Slide ${index}`}
-              style={{ width: "100%", height: "auto" }}
-            />
-          </Box>
-        ))}
-      </Slider> */}
-      <Swiper
-        style={styles.swiper}
-        loop={false}
-        showsPagination={true}
-        dotColor={"#CCCCCC"}
-        activeDotColor={"green"}
-        paginationStyle={styles.paginationStyle}
-        showsButtons
-        onIndexChanged={onIndexChanged}
-      >
-        {images.map((image, index) => (
-          <View key={index} style={styles.slide}>
-            <Image source={{ uri: image }} style={styles.image} />
+    <View style={styles.container}>
+      <View style={styles.swiperContainer}>
+        <Swiper
+          style={styles.swiper}
+          loop={false}
+          showsPagination={true}
+          dotColor={"#CCCCCC"}
+          activeDotColor={"green"}
+          paginationStyle={styles.paginationStyle}
+          showsButtons
+          onIndexChanged={onIndexChanged}
+        >
+          {images.map((image, index) => (
+            <View key={index} style={styles.slide}>
+              <Image source={{ uri: image }} style={styles.image} />
+            </View>
+          ))}
+        </Swiper>
+      </View>
+      <View style={styles.infoContainer}>
+        <View style={styles.authorInfo}>
+          <Image source={{ uri: avatar }} style={styles.avatar} />
+          <View style={styles.authorTextContainer}>
+            <Text style={styles.authorName}>{username}</Text>
+            <Text style={styles.createdAt}>{createTime.slice(0, 10)}</Text>
           </View>
-        ))}
-      </Swiper>
-      <Box sx={{ p: 2 }}>
-        <Box sx={{ display: "flex", alignItems: "center", mb: 1 }}>
-          <Avatar src={avatar} sx={{ width: 40, height: 40, mr: 1 }} />
-          <Box sx={{ flexGrow: 1 }}>
-            <Typography variant="subtitle1" component="div">
-              {username}
-            </Typography>
-            <Typography variant="caption" color="text.secondary">
-              {new Date(createTime).toLocaleDateString()}
-            </Typography>
-          </Box>
-          <IconButton
-            onClick={() => console.log("Share functionality to be implemented")}
-          >
-            <ShareIcon />
-          </IconButton>
-        </Box>
-        <Typography variant="h6" component="div" sx={{ mb: 1 }}>
-          {title}
-        </Typography>
-        <Typography variant="body1">{content}</Typography>
-      </Box>
-    </Box>
+          <TouchableOpacity onPress={handleShare}>
+            <Image source={icon_share} style={styles.shareIcon} />
+          </TouchableOpacity>
+        </View>
+        <Text style={styles.title}>{title}</Text>
+        <Text style={styles.content}>{content}</Text>
+      </View>
+    </View>
   );
 };
 
-export default TripDetail;
-
-const styles = {
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: "#FFFFFF",
+  },
+  swiperContainer: {
+    flex: 1,
+  },
   swiper: {
     flex: 1,
   },
@@ -102,4 +82,44 @@ const styles = {
     width: "100%",
     height: "100%",
   },
-};
+  infoContainer: {
+    padding: 10,
+  },
+  authorInfo: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 5,
+  },
+  avatar: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    marginRight: 10,
+  },
+  authorTextContainer: {
+    flex: 1,
+  },
+  authorName: {
+    fontSize: 16,
+    fontWeight: "bold",
+  },
+  createdAt: {
+    fontSize: 12,
+    color: "#999999",
+  },
+  title: {
+    fontSize: 18,
+    fontWeight: "bold",
+    marginBottom: 10,
+  },
+  content: {
+    fontSize: 16,
+  },
+  shareIcon: {
+    width: 24,
+    height: 24,
+    marginLeft: 10,
+  },
+});
+
+export default TripDetail;

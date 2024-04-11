@@ -4,7 +4,7 @@ import Cookies from "js-cookie";
 
 const withAuth = (Component, requiredRole) => {
   return (props) => {
-    const userRole = Cookies.get("userRole");
+    const userRole = Cookies.get("adminRole");
 
     // 检查用户角色是否符合要求
     if (userRole !== requiredRole) {

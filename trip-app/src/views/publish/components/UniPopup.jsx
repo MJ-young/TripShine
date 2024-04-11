@@ -31,7 +31,7 @@ export default function UniPopup({ show, onHidePopup }) {
           color="primary"
           sx={{ mt: 2 }}
         >
-          俺晓得了
+          我已知晓
         </Button>
       </Box>
     </Modal>

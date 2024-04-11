@@ -33,6 +33,20 @@ export const getAllPassTrips = (
   });
 };
 
+// 封装查询用户个人发布的游记
+export const getUserTrips = (
+  params: FetchTripsParams
+): Promise<TripListResponse> => {
+  return request({
+    url: `/api/trip/status/${params.status}`,
+    method: "get",
+    params: {
+      pageNum: params.pageNum || 1,
+      pageSize: params.pageSize || 10,
+    },
+  });
+};
+
 // 关键词搜索旅行日记
 export const searchTrips = (params: {
   keyword: string;

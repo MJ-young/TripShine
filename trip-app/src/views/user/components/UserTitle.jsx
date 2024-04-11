@@ -1,7 +1,8 @@
 import React from "react";
 import { View, TouchableOpacity, Image, StyleSheet } from "react-native";
-import icon_menu from "@/assets/icon_menu.png";
-import icon_share from "@/assets/icon_share.png";
+import icon_menu from "@/assets/icon/icon_menu.png";
+import icon_share from "@/assets/icon/icon_share.png";
+// import { sideMenuRef } from "../SideMenu";
 
 export const UserTitle = () => {
   return (
@@ -9,7 +10,7 @@ export const UserTitle = () => {
       <TouchableOpacity
         style={styles.menuButton}
         onPress={() => {
-          // sideMenuRef.current?.show()
+          // sideMenuRef.current?.show();
         }}
       >
         <Image

@@ -23,8 +23,8 @@ interface MainLayoutProps {
 const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
   const navigate = useNavigate();
   const [collapsed, setCollapsed] = useState(false);
-  const userRole = Cookies.get("userRole") || "guest";
-  const username = Cookies.get("username");
+  const userRole = Cookies.get("adminRole") || "admin";
+  const username = Cookies.get("adminName");
   const token = getToken();
   // 如果用户未登录，直接重定向到登录页面
   if (!token) {

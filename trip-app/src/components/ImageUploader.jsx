@@ -48,7 +48,11 @@ const ImageUploader = ({ images, setImages }) => {
         {images.map((image, index) => (
           <View key={index} style={styles.imageItem}>
             <TouchableOpacity onPress={() => handlePreview(image)}>
-              <Image source={{ uri: image }} style={styles.image} />
+              <Image
+                source={{ uri: image }}
+                style={styles.image}
+                resizeMode="cover"
+              />
             </TouchableOpacity>
             <Button
               onClick={() => deleteImage(index)}
@@ -97,6 +101,8 @@ const styles = StyleSheet.create({
   imageItem: {
     position: "relative",
     margin: 5,
+    // width: "33%",
+    // height: "33%",
   },
   image: {
     width: 100,

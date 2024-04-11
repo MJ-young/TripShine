@@ -8,10 +8,8 @@ import {
   Image,
 } from "react-native";
 import UserInfo from "./components/UserInfo";
-import UserTabs from "./components/UserTabs";
-import UserTrips from "./components/UserTrips";
 import UserTrip from "./components/userTrip";
-import { getUserTrips } from "@/api/statusTrip";
+import { getUserTrips } from "@/api/trip";
 import icon_mine_bg from "@/assets/icon_mine_bg.jpg";
 import { UserTitle } from "./components/UserTitle";
 

@@ -9,15 +9,16 @@ const { base64ToBlob } = require("../utils/base64ToBlob");
 exports.createTrip = async (req, res) => {
   try {
     const userId = req.userId;
-    const user = User.findById(userId);
+    const author = await User.findById(userId);
     const tripData = {
       ...req.body,
       userId: userId,
-      username: user.username,
-      avatar: user.avatar,
+      username: author.username,
+      avatar: author.avatar,
     };
     const newTrip = new Trip(tripData);
-    const savedTrip = await newTrip.save();
+    // 获取保存之后的新游记对象
+    const savedTrip = await newTrip.save({ new: true });
     return res.status(201).json({ data: savedTrip });
   } catch (error) {
     return res.status(500).json({ message: error.message });

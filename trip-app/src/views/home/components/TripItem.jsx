@@ -1,6 +1,7 @@
 import React from "react";
 import { View, Text, Image, TouchableOpacity, StyleSheet } from "react-native";
 import { useNavigation } from "@react-navigation/native";
+import formatDate from "@/utils/formatDate";
 
 const TripItem = ({ trip }) => {
   const navigation = useNavigation();
@@ -11,6 +12,7 @@ const TripItem = ({ trip }) => {
     <TouchableOpacity style={styles.card} onPress={onPress}>
       <Image source={{ uri: trip.images[0] }} style={styles.image} />
       <Text style={styles.title}>{trip.title}</Text>
+      <Text style={styles.date}>{formatDate(trip.createTime)}</Text>
       <View style={styles.authorContainer}>
         <Image
           source={{ uri: trip.avatar }}
@@ -45,7 +47,14 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 16,
     fontWeight: "bold",
-    margin: 8,
+    marginHorizontal: 8,
+    marginVertical: 4,
+  },
+  date: {
+    fontSize: 12,
+    marginHorizontal: 8,
+    marginVertical: 4,
+    textAlign: 8,
   },
   authorContainer: {
     flexDirection: "row",

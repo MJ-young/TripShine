@@ -1,10 +1,16 @@
 import { SET_USER, UPDATE_USER, CLEAR_USER } from "../actionTypes";
-import { setToken, removeToken } from "@/utils/auth";
+import {
+  setToken,
+  removeToken,
+  setUserCookie,
+  UpdateUserCookie,
+} from "@/utils/auth";
 
 // Action to set user information
 export const setUser = (userData) => {
-  // setToken
   setToken(userData.token);
+  setUserCookie(userData.user);
+  console.log("正在设置用户信息", userData);
   return {
     type: SET_USER,
     payload: userData,
@@ -12,10 +18,13 @@ export const setUser = (userData) => {
 };
 
 // Action to update user information
-export const updateUser = (updates) => ({
-  type: UPDATE_USER,
-  payload: updates,
-});
+export const updateUser = (updates) => {
+  UpdateUserCookie(updates);
+  return {
+    type: UPDATE_USER,
+    payload: updates,
+  };
+};
 
 // Action to clear user information
 export const clearUser = () => {

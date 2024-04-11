@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
+import { useFocusEffect } from "@react-navigation/native";
 import {
   Box,
   Tabs,
@@ -11,8 +12,9 @@ import {
   IconButton,
 } from "@mui/material";
 import RefreshIcon from "@mui/icons-material/Refresh";
-import { getUserTrips, deleteTrip } from "@/api/statusTrip";
+import { getUserTrips } from "@/api/trip";
 import { useNavigation } from "@react-navigation/native";
+import formatDate from "@/utils/formatDate";
 
 const UserTrip = () => {
   const navigation = useNavigation();
@@ -46,23 +48,29 @@ const UserTrip = () => {
 
   const loadDiaries = async (status) => {
     setLoading(true);
-    try {
-      const response = await getUserTrips({ status });
-      setDiaries((prev) => ({ ...prev, [status]: response.data }));
-    } catch (error) {
-      console.error("Error fetching trips:", error);
-    } finally {
-      setLoading(false);
-    }
+    getUserTrips({ status })
+      .then((response) => {
+        if (response.data) {
+          setDiaries((prev) => ({ ...prev, [status]: response.data }));
+        }
+      })
+      .catch((error) => {
+        console.error("Error fetching trips:", error);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
   };
 
   const handleRefresh = () => {
     loadDiaries(getStatus(tabIndex));
   };
 
-  useEffect(() => {
-    loadDiaries(getStatus(tabIndex)); // 初始加载第一个标签的数据
-  }, []);
+  useFocusEffect(
+    useCallback(() => {
+      loadDiaries(getStatus(tabIndex));
+    }, [tabIndex])
+  );
 
   const handleItemClick = (diary) => {
     navigation.push("TripForm", diary);
@@ -100,7 +108,28 @@ const UserTrip = () => {
           {diaries[getStatus(tabIndex)]?.map((diary) => (
             <React.Fragment key={diary._id}>
               <ListItem button onClick={() => handleItemClick(diary)}>
-                <ListItemText primary={diary.title} secondary={diary.content} />
+                <Box
+                  sx={{
+                    width: 50,
+                    height: 50,
+                    overflow: "hidden",
+                    marginRight: 2,
+                  }}
+                >
+                  <img
+                    src={diary.images[0]}
+                    alt={diary.title}
+                    style={{
+                      width: "100%",
+                      height: "100%",
+                      objectFit: "cover",
+                    }}
+                  />
+                </Box>
+                <ListItemText
+                  primary={diary.title}
+                  secondary={`创建时间: ${formatDate(diary.createTime)}`}
+                />
               </ListItem>
               <Divider />
             </React.Fragment>

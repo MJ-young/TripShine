@@ -22,24 +22,24 @@ exports.registerUser = async (req, res) => {
       // 对密码进行加密
       const hashedPassword = await bcrypt.hash(password, 10);
       const newUser = new User({ username, password: hashedPassword });
-      await newUser.save();
+      const savedUser = await newUser.save({ new: true });
       // 生成token
       const payload = {
-        userId: newUser._id,
+        userId: savedUser._id,
         userRole: "user", // 假设用户模型中包含角色信息
       };
       const token = jwt.sign(payload, secretKey, {
-        // 测试时设置token过期时间为2分钟
-        expiresIn: "24h",
+        // 测试时设置token过期时间
+        expiresIn: "20m",
       });
       const userInfo = {
-        userId: newUser._id,
-        username: newUser.username,
-        avatar: newUser.avatar,
+        userId: savedUser._id,
+        username: savedUser.username,
+        avatar: savedUser.avatar,
       };
       res.status(200).json({
         message: "User registered successfully",
-        data: { userInfo },
+        userInfo,
         token,
       });
     });
@@ -71,7 +71,7 @@ exports.loginUser = async (req, res) => {
       // 生成token
       const token = jwt.sign(payload, secretKey, {
         // 测试时设置token过期时间为2分钟
-        expiresIn: "24h",
+        expiresIn: "20m",
       });
       const userInfo = {
         userId: user._id,
@@ -111,7 +111,6 @@ exports.getUserInfo = async (req, res) => {
 // 上传用户头像
 exports.uploadAvatar = async (req, res) => {
   try {
-    const userId = req.userId;
     // 文件字段名假设为'avatar'
     upload.single("avatar")(req, res, async function (err) {
       if (err instanceof multer.MulterError) {
@@ -121,6 +120,7 @@ exports.uploadAvatar = async (req, res) => {
         // 发生未知错误
         return res.status(500).json({ message: "文件上传失败" });
       }
+      const userId = req.userId;
       // 上传成功，req.file 包含了文件的信息
       const file = req.file;
       console.log(file);

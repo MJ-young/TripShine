@@ -26,9 +26,9 @@ export default function LoginPage() {
   });
 
   const getCookie = () => {
-    const username = Cookies.get("username");
-    const password = Cookies.get("password");
-    const remember = Cookies.get("remember");
+    const username = Cookies.get("adminName");
+    const password = Cookies.get("adminPwd");
+    const remember = Cookies.get("adminRemember");
     if (username && password && remember) {
       form.setFieldsValue({
         username: username,
@@ -50,23 +50,23 @@ export default function LoginPage() {
         };
         dispatch(setUser(payload));
         if (form.getFieldValue("remember")) {
-          Cookies.set("username", form.getFieldValue("username"), {
+          Cookies.set("adminName", form.getFieldValue("username"), {
             expires: 7,
           });
-          Cookies.set("password", encrypt(form.getFieldValue("password")), {
+          Cookies.set("adminPwd", encrypt(form.getFieldValue("password")), {
             expires: 7,
           });
-          Cookies.set("remember", form.getFieldValue("remember"), {
+          Cookies.set("adminRemember", form.getFieldValue("remember"), {
             expires: 7,
           });
-          Cookies.set("userRole", response.userInfo.role, {
+          Cookies.set("adminRole", response.userInfo.role, {
             expires: 7,
           });
         } else {
-          Cookies.remove("username");
-          Cookies.remove("password");
-          Cookies.remove("remember");
-          Cookies.remove("userRole");
+          Cookies.remove("adminName");
+          Cookies.remove("adminPwd");
+          Cookies.remove("adminRemember");
+          Cookies.remove("adminRole");
         }
         // 跳转到主页
         navigate("/tripAdmin");

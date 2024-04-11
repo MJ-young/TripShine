@@ -1,17 +1,12 @@
 import * as React from "react";
-import { Image } from "react-native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import Home from "@views/home/index";
 import User from "@views/user/index";
 import CardPublish from "@views/publish/index";
-import CardDetail from "@views/card/CardDetail";
-import Login from "@views/login/login";
-import Register from "@views/login/register";
-
-import icon_tab_publish from "@/assets/icon_tab_publish.png";
 import TripForm from "@/views/trip/tripFrom";
+import TripDetail from "@/views/trip/tripDetail";
 
 const Tab = createBottomTabNavigator();
 const ListStack = createNativeStackNavigator();
@@ -24,9 +19,10 @@ function ListStackScreen() {
         component={Home}
         options={{
           title: "Home",
+          headerShown: false,
         }}
       ></ListStack.Screen>
-      <ListStack.Screen name="Detail" component={CardDetail}></ListStack.Screen>
+      <ListStack.Screen name="Detail" component={TripDetail}></ListStack.Screen>
     </ListStack.Navigator>
   );
 }
@@ -39,6 +35,7 @@ function UserStackScreen() {
         component={User}
         options={{
           title: "User",
+          headerShown: false,
         }}
       ></ListStack.Screen>
       <ListStack.Screen name="TripForm" component={TripForm}></ListStack.Screen>
@@ -48,7 +45,7 @@ function UserStackScreen() {
 
 export default function Nav() {
   return (
-    <Tab.Navigator screenOptions={{ tabBarActiveTintColor: "#222222" }}>
+    <Tab.Navigator screenOptions={{ tabBarActiveTintColor: "#0A83F9" }}>
       <Tab.Screen
         name="Home"
         component={ListStackScreen}
@@ -63,11 +60,13 @@ export default function Nav() {
         name="CardPublish"
         component={CardPublish}
         options={{
-          title: "发布",
-          tabBarIcon: ({ size }) => (
-            <Image
-              source={icon_tab_publish}
-              style={{ width: size, height: size }}
+          title: "Publish",
+          headerShown: false,
+          tabBarIcon: ({ color, size }) => (
+            <MaterialCommunityIcons
+              name="plus-box-multiple"
+              color={color}
+              size={size}
             />
           ),
         }}
@@ -82,16 +81,6 @@ export default function Nav() {
           ),
         }}
       />
-      {/* <Tab.Screen
-        name="Login"
-        component={Login}
-        options={{
-          title: "登录",
-          tabBarIcon: ({ color, size }) => (
-            <MaterialCommunityIcons name="login" color={color} size={size} />
-          ),
-        }}
-      /> */}
     </Tab.Navigator>
   );
 }
