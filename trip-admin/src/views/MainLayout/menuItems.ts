@@ -11,13 +11,13 @@ interface MenuItem {
 }
 
 const menuItems: MenuItem[] = [
-  {
-    key: "dataMiner",
-    path: "/dataMiner",
-    label: "Data Miner",
-    icon: React.createElement(HeartOutlined),
-    roles: ["common", "super"],
-  },
+  // {
+  //   key: "dataMiner",
+  //   path: "/dataMiner",
+  //   label: "Data Miner",
+  //   icon: React.createElement(HeartOutlined),
+  //   roles: ["common", "super"],
+  // },
   {
     key: "tripAdmin",
     path: "/tripAdmin",
@@ -32,13 +32,13 @@ const menuItems: MenuItem[] = [
     icon: React.createElement(UserOutlined),
     roles: ["super"], // 仅'super'角色可以访问
   },
-  {
-    key: "event",
-    path: "/event",
-    label: "Event",
-    icon: React.createElement(HeartOutlined),
-    roles: ["common", "super"],
-  },
+  // {
+  //   key: "event",
+  //   path: "/event",
+  //   label: "Event",
+  //   icon: React.createElement(HeartOutlined),
+  //   roles: ["common", "super"],
+  // },
 ];
 
 export default menuItems;

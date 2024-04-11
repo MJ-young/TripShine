@@ -56,17 +56,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
     <Layout className="layout">
       <Sider trigger={null} collapsible collapsed={collapsed}>
         <div className="logo-box">
-          <a
-            href="https://reactjs.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <img
-              src="https://img.icons8.com/color/48/000000/react-native.png"
-              className="logo"
-              alt="React logo"
-            />
-          </a>
+          <img src="src/assets/trip.svg" className="logo" alt="React logo" />
           {/* <SunOutlined style={{ fontSize: "4rem", color: "#FFA500" }} /> */}
           <div>{!collapsed ? "Trip Shine" : "Trip"}</div>
         </div>

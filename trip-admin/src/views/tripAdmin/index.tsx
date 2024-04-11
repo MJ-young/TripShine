@@ -1,9 +1,19 @@
 import { useState, useEffect } from "react";
-import { Table, Space, Button, notification, Modal, Tag } from "antd";
+import {
+  Table,
+  Space,
+  Button,
+  notification,
+  Modal,
+  Tag,
+  Select,
+  Form,
+} from "antd";
 import { getTripsByStatus, Trip, deleteTrip } from "@/api/trip";
 import TripDetailModal from "./tripDetail";
 import formatDate from "@/utils/formatDate";
 import Cookies from "js-cookie";
+const { Option } = Select;
 
 const TripAdmin = () => {
   const [trips, setTrips] = useState<Trip[]>([]);
@@ -11,11 +21,16 @@ const TripAdmin = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
   const [selectedTrip, setSelectedTrip] = useState<Trip | null>(null);
+  const [selectedStatus, setSelectedStatus] = useState<string>("all");
   const userRole = Cookies.get("adminRole");
 
-  const loadData = async (pageNum = 1, pageSize = 10) => {
+  const loadData = async (
+    pageNum = 1,
+    pageSize = 10,
+    status = selectedStatus
+  ) => {
     setLoading(true);
-    getTripsByStatus({ status: "all", pageNum, pageSize })
+    getTripsByStatus({ status, pageNum, pageSize })
       .then((response) => {
         setTrips(response.data);
         setTotal(response.total);
@@ -29,10 +44,14 @@ const TripAdmin = () => {
 
   useEffect(() => {
     loadData();
-  }, []);
+  }, [selectedStatus]);
 
   const handleTableChange = (page, pageSize) => {
     loadData(page, pageSize);
+  };
+
+  const handleStatusChange = (value) => {
+    setSelectedStatus(value);
   };
   const handleViewDetails = (record: Trip) => {
     setSelectedTrip(record);
@@ -50,6 +69,10 @@ const TripAdmin = () => {
     reject: {
       color: "error",
       text: "拒绝",
+    },
+    all: {
+      color: "default",
+      text: "全部",
     },
   };
 
@@ -132,6 +155,29 @@ const TripAdmin = () => {
 
   return (
     <>
+      <Form.Item
+        label="审核状态"
+        style={{
+          marginBottom: 20,
+          fontSize: 16,
+          fontWeight: "blod",
+          marginLeft: 10,
+        }}
+      >
+        <Select
+          defaultValue="all"
+          style={{ width: 120 }} // 可以根据需要调整宽度
+          onChange={handleStatusChange}
+        >
+          {Object.keys(auditStatusMap).map((status) => (
+            <Option key={status} value={status}>
+              <Tag color={auditStatusMap[status].color}>
+                {auditStatusMap[status].text}
+              </Tag>
+            </Option>
+          ))}
+        </Select>
+      </Form.Item>
       <Table
         rowKey={"_id"}
         loading={loading}

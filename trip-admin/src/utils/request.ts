@@ -38,14 +38,11 @@ service.interceptors.response.use(
         message: "Success",
         description: res.data.message,
       });
-      //   return Promise.reject("error");
     }
     return res.data;
   },
   (error) => {
-    console.error("err" + error);
     if (error.response.status) {
-      console.log("!!!", error.response.status);
       const msg = error.response.data.message;
       switch (error.response.status) {
         case 401:
@@ -53,7 +50,6 @@ service.interceptors.response.use(
             return;
           }
           isRelogin.show = true;
-          // 使用Ant Design的Modal组件
           Modal.confirm({
             title: "系统提示",
             content: "登录状态已过期，您可以继续留在该页面，或者重新登录",
