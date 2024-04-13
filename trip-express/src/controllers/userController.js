@@ -2,7 +2,7 @@ const bcrypt = require("bcryptjs");
 const User = require("../models/user");
 const jwt = require("jsonwebtoken");
 const { secretKey } = require("../config/secret");
-const upload = require("../utils/upload");
+const upload = require("../middlewares/upload");
 const multer = require("multer");
 
 // 配置multer，使用.parseForm()表示不处理文件上传，只处理文本字段

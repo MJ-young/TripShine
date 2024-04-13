@@ -8,7 +8,7 @@ import {
   Image,
 } from "react-native";
 import UserInfo from "./components/UserInfo";
-import UserTrip from "./components/userTrip";
+import UserTripTab from "./components/UserTripTab";
 import { getUserTrips } from "@/api/trip";
 import icon_mine_bg from "@/assets/icon_mine_bg.jpg";
 import { UserTitle } from "./components/UserTitle";
@@ -41,7 +41,7 @@ const User = () => {
       <UserInfo />
       {/* <UserTabs tabIndex={tabIndex} setTabIndex={setTabIndex} /> */}
       {/* <UserTrips trips={trips[tabIndex]} tabIndex={tabIndex} /> */}
-      <UserTrip />
+      <UserTripTab />
     </ScrollView>
   );
 };

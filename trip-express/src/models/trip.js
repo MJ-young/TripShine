@@ -27,6 +27,8 @@ const tripSchema = new mongoose.Schema({
   deleteReason: { type: String },
   // 逻辑删除标识
   isDeleted: { type: Boolean, default: false },
+  // 拒绝原因
+  rejectReason: { type: String },
 });
 
 const Trip = mongoose.model("Trip", tripSchema);

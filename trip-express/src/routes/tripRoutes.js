@@ -13,11 +13,11 @@ router.put("/:id", checkAuth, parseForm, tripController.updateTrip); // 使用PU
 // 删除游记
 router.delete("/:id", checkAuth, tripController.deleteTrip); // 使用DELETE方法，并通过URL参数传递ID
 // 获取单个游记详情
-router.get("/detail/:id", checkAuth, tripController.getTripDetail); // 通过URL参数传递ID
+router.get("/detail/:id", tripController.getTripDetail); // 通过URL参数传递ID
 // 通过标题的关键词搜索游记
-router.get("/search", checkAuth, tripController.searchTrip); // 通过query参数传递搜索关键词
+router.get("/search", tripController.searchTrip); // 通过query参数传递搜索关键词
 // 获取所有游记
-router.get("/list", checkAuth, tripController.getAllTrips);
+router.get("/list", tripController.getAllTrips);
 
 // 获取访问接口的用户某个审核状态的所有游记（需要鉴权）,默认返回全部游记
 router.get("/status/:status", checkAuth, tripController.getTripByStatus); // 通过URL参数传递审核状态

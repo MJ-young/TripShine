@@ -11,12 +11,14 @@ import {
   CircularProgress,
   IconButton,
 } from "@mui/material";
+import Chip from "@mui/material/Chip";
+import Typography from "@mui/material/Typography";
 import RefreshIcon from "@mui/icons-material/Refresh";
 import { getUserTrips } from "@/api/trip";
 import { useNavigation } from "@react-navigation/native";
 import formatDate from "@/utils/formatDate";
 
-const UserTrip = () => {
+const UserTripTab = () => {
   const navigation = useNavigation();
   const [tabIndex, setTabIndex] = useState(0);
   const [diaries, setDiaries] = useState({
@@ -128,7 +130,40 @@ const UserTrip = () => {
                 </Box>
                 <ListItemText
                   primary={diary.title}
-                  secondary={`创建时间: ${formatDate(diary.createTime)}`}
+                  secondary={
+                    <>
+                      {getStatus(tabIndex) != "reject" && (
+                        <>
+                          <Typography component="span" variant="body2">
+                            创建时间: {formatDate(diary.createTime)}
+                          </Typography>
+                          <br />
+                        </>
+                      )}
+                      {getStatus(tabIndex) == "reject" && (
+                        <>
+                          <Chip
+                            label="拒绝原因"
+                            color="secondary"
+                            size="small"
+                            sx={{ mr: 1, bgcolor: "error.main" }}
+                          />
+                          <Typography
+                            component="span"
+                            variant="body2"
+                            color="text.primary"
+                          >
+                            {diary.rejectReason}
+                          </Typography>
+                          <br />
+
+                          <Typography component="span" variant="body2">
+                            审核时间: {formatDate(diary.updateTime)}
+                          </Typography>
+                        </>
+                      )}
+                    </>
+                  }
                 />
               </ListItem>
               <Divider />
@@ -140,4 +175,4 @@ const UserTrip = () => {
   );
 };
 
-export default UserTrip;
+export default UserTripTab;

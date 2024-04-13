@@ -11,7 +11,7 @@ const RejectTripModal = ({ tripId, visible, onClose }) => {
     setLoading(true);
     const params = {
       id: tripId,
-      reason: values.reason,
+      rejectReason: values.reason,
     };
     rejectTrip(params)
       .then(() => {

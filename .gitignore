@@ -22,3 +22,6 @@ rebel.xml
 ### 子项目中的node_modules ###
 node_modules/
 
+### 阿里云OSS配置文件 ###
+.env
+

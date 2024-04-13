@@ -1,9 +1,5 @@
 const express = require("express");
 const userController = require("../controllers/userController");
-const upload = require("../utils/upload");
-const multer = require("multer");
-const { deleteFilesFromOSS } = require("../utils/ossService");
-const parseForm = multer().none();
 const checkAuth = require("../middlewares/checkAuth");
 
 const router = express.Router();

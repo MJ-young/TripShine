@@ -1,5 +1,5 @@
 const Trip = require("../models/trip");
-const upload = require("../utils/upload");
+const upload = require("../middlewares/upload");
 const multer = require("multer");
 const { deleteFilesFromOSS } = require("../utils/ossService");
 const User = require("../models/user");
@@ -226,7 +226,7 @@ exports.rejectAuditTrip = async (req, res) => {
     await Trip.findByIdAndUpdate(req.params.id, {
       auditStatus: "reject",
       auditTime: Date.now(),
-      auditor: req.query.userId,
+      auditor: req.userId,
       rejectReason: req.query.rejectReason,
     });
     res.status(200).json({ message: "拒绝通过" });

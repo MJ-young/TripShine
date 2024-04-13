@@ -14,7 +14,7 @@ interface FetchTripsParams {
 
 interface RejectTripParams {
   id: string;
-  reason: string;
+  rejectReason: string;
 }
 
 // 定义旅行日记类型
@@ -56,7 +56,7 @@ export const rejectTrip = (params: RejectTripParams): Promise<unknown> => {
     url: `/api/trip/audit/reject/${params.id}`,
     method: "put",
     params: {
-      reason: params.reason,
+      rejectReason: params.rejectReason,
     },
   });
 };
