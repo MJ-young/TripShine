@@ -18,6 +18,7 @@ Trip Shine 采用前后端分离的架构，前端使用 React 框架，后端�
     - trip-app 移动端代码
     - trip-express 后端代码
     - trip-admin 管理后台代码
+    - img 项目效果图片
     - README.md
 
 ### git 提交规范
@@ -30,8 +31,6 @@ Trip Shine 采用前后端分离的架构，前端使用 React 框架，后端�
 ### 项目管理平台
 
 任务分工和进度管理使用以下工具：
-
-（待完善部分及 bug 会持续更新在下方平台，项目成员相互及时补充）
 
 - 飞书 Tower 协作 TripShineSHU 团队
 - [Trello](https://trello.com/b/WmLRRX9r/tripshine)
