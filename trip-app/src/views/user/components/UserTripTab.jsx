@@ -1,21 +1,7 @@
 import React, { useState, useEffect, useCallback } from "react";
-import {
-  View,
-  Text,
-  StyleSheet,
-  FlatList,
-  TouchableOpacity,
-  ScrollView,
-  Image,
-} from "react-native";
+import { View, Text, StyleSheet, FlatList, Image } from "react-native";
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
-import {
-  ActivityIndicator,
-  Divider,
-  List,
-  Avatar,
-  Button,
-} from "react-native-paper";
+import { ActivityIndicator, Divider, List, Button } from "react-native-paper";
 import { getUserTrips } from "@/api/trip";
 import formatDate from "@/utils/formatDate";
 

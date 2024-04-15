@@ -36,4 +36,50 @@ Trip Shine 采用前后端分离的架构，前端使用 React 框架，后端�
 - 飞书 Tower 协作 TripShineSHU 团队
 - [Trello](https://trello.com/b/WmLRRX9r/tripshine)
 
+### 项目文档
+
+- [飞书文档](https://gwijz8ymrk1.feishu.cn/wiki/FkfFww58MiBM2LkYkWbc2kIUnig?from=from_copylink)
+
 ### 效果展示
+
+#### 移动端
+
+- 登录
+  - ![登录](./img/app/app-login-full.png)
+- 首页
+  - ![首页](./img/app/app-home.png)
+- 日记详情
+  - ![日记详情](./img/app/app-detail.png)
+- 发布须知
+  - ![发布须知](./img/app/app-publish-pop.png)
+- 发布日记
+  - ![发布日记](./img/app/app-publish.png)
+- 个人中心
+  - ![个人中心](./img/app/app-user.png)
+- 拒绝列表
+  - ![拒绝列表](./img/app/app-user-reject.png)
+- 修改头像
+  - ![修改头像](./img/app/app-avatar-upload.png)
+- 修改游记
+  - ![修改游记](./img/app/app-edit.png)
+- 删除游记
+  - ![删除游记](./img/app/app-trip-delete.png)
+
+#### 管理后台
+
+- 登录
+  - ![登录](./img/admin/admin-login.png)
+- 审核列表
+  - ![审核列表](./img/admin/admin-trip.png)
+- 审核详情
+  - ![审核详情](./img/admin/admin-trip-detail.png)
+- 审核拒绝
+  - ![审核拒绝](./img/admin/admin-trip-reject.png)
+- 状态筛选
+  - ![状态筛选](./img/admin/admin-trip-status.png)
+- 管理员列表
+  - ![管理员列表](./img/admin/admin-admin.png)
+- 新增管理员
+  - ![新增管理员](./img/admin/admin-admin-add.png)
+- 重置密码
+  - ![重置密码](./img/admin/admin-admin-reset.png)
