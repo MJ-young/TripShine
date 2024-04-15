@@ -1,15 +1,24 @@
 import axios from "axios";
-import { getToken } from "@/utils/auth";
+import store from "@/store";
 import NavigationService from "./NavigationService";
 import Toast from "react-native-toast-message";
+import Constants from "expo-constants";
 
 export const isRelogin = { show: false };
-
 axios.defaults.headers["Content-Type"] = "application/json;charset=utf-8";
+
+let baseURL = "http://localhost:3000"; // 默认使用 localhost
+
+if (Constants.expoConfig) {
+  const { expoConfig } = Constants;
+  if (expoConfig.hostUri) {
+    baseURL = `http://${expoConfig.hostUri.split(":").shift()}:3000`;
+  }
+}
 
 // 创建axios实例
 const service = axios.create({
-  baseURL: "http://localhost:3000", // api的base_url
+  baseURL: baseURL,
   timeout: 5000, // 请求超时时间
 });
 
@@ -18,8 +27,9 @@ service.interceptors.request.use(
   (config) => {
     // 是否需要设置 token
     const isToken = (config.headers || {}).isToken === false;
-    if (getToken() && !isToken) {
-      config.headers["Authorization"] = "Bearer " + getToken(); // 设置请求头的Authorization
+    const token = store.getState().user.token; // Access token from Redux store
+    if (token && !isToken) {
+      config.headers["Authorization"] = `Bearer ${token}`; // 设置请求头的Authorization
     }
     return config;
   },

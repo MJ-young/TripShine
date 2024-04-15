@@ -4,15 +4,17 @@ import { setUser } from "@/store/actions";
 import Cookies from "js-cookie";
 import { encrypt } from "@/utils/jsencrypt";
 import { login, register } from "@/api/user";
-import Box from "@mui/material/Box";
-import TextField from "@mui/material/TextField";
-import Button from "@mui/material/Button";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import Checkbox from "@mui/material/Checkbox";
-import Typography from "@mui/material/Typography";
-import CircularProgress from "@mui/material/CircularProgress";
+import {
+  Button,
+  TextInput,
+  Checkbox,
+  Text,
+  ActivityIndicator,
+  Card,
+  Provider as PaperProvider,
+} from "react-native-paper";
+import { View, StyleSheet } from "react-native";
 import NavigationService from "@/utils/NavigationService";
-import Container from "@mui/material/Container";
 import { useNavigation } from "@react-navigation/native";
 
 const Login = () => {
@@ -33,11 +35,10 @@ const Login = () => {
     }
   }, [token]);
 
-  const handleChange = (event) => {
-    const { name, value, checked } = event.target;
+  const handleChange = (name, value) => {
     setForm((prevForm) => ({
       ...prevForm,
-      [name]: name === "remember" ? checked : value,
+      [name]: value,
     }));
   };
 
@@ -96,105 +97,85 @@ const Login = () => {
   };
 
   return (
-    <Container component="main" maxWidth="xs">
-      <Box sx={styles.box}>
-        <Typography variant="h4" component="h1" sx={styles.mianTitle}>
-          TripShine
-        </Typography>
-        <Typography variant="h6" component="h2" sx={styles.subTitle}>
-          Brilliant all the way
-        </Typography>
-        <TextField
+    <PaperProvider>
+      <Card style={styles.card}>
+        <Text style={styles.mainTitle}>TripShine</Text>
+        <Text style={styles.subTitle}>Brilliant all the way</Text>
+        <TextInput
+          mode="outlined"
           label="用户名"
-          variant="outlined"
-          name="username"
           value={form.username}
-          onChange={handleChange}
-          margin="normal"
-          fullWidth
+          onChangeText={(text) => handleChange("username", text)}
+          style={styles.input}
         />
-        <TextField
+        <TextInput
+          mode="outlined"
           label="密码"
-          type="password"
-          variant="outlined"
-          name="password"
+          secureTextEntry
           value={form.password}
-          onChange={handleChange}
-          margin="normal"
-          fullWidth
+          onChangeText={(text) => handleChange("password", text)}
+          style={styles.input}
         />
-        <FormControlLabel
-          control={
-            <Checkbox
-              name="remember"
-              checked={form.remember}
-              onChange={handleChange}
-            />
-          }
-          label="记住密码"
-        />
+        <View style={styles.checkboxContainer}>
+          <Checkbox
+            status={form.remember ? "checked" : "unchecked"}
+            onPress={() => handleChange("remember", !form.remember)}
+          />
+          <Text>记住密码</Text>
+        </View>
         <Button
-          variant="contained"
-          onClick={onFinish}
+          mode="contained"
+          onPress={onFinish}
           disabled={loading}
-          fullWidth
-          sx={styles.loginButton}
+          style={styles.button}
         >
-          {loading ? <CircularProgress size={24} /> : "登录"}
+          {loading ? <ActivityIndicator size={24} /> : "登录"}
         </Button>
         <Button
-          variant="outlined"
-          onClick={onRegister}
+          mode="outlined"
+          onPress={onRegister}
           disabled={loading}
-          fullWidth
-          sx={styles.registerButton}
+          style={styles.button}
         >
-          {loading ? <CircularProgress size={24} /> : "注册"}
+          {loading ? <ActivityIndicator size={24} /> : "注册"}
         </Button>
-      </Box>
-    </Container>
+      </Card>
+    </PaperProvider>
   );
 };
 
 export default Login;
 
-const styles = {
-  box: {
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
+const styles = StyleSheet.create({
+  card: {
+    flex: 1,
+    padding: 20,
     justifyContent: "center",
-    minHeight: "100vh",
-    pb: 8,
   },
-  mianTitle: {
-    color: "#0A83F9", // 蓝色
-    fontFamily: "Arial Rounded MT Bold", // 圆润的字体
+  mainTitle: {
+    fontSize: 30,
+    // fontFamily: "Arial Rounded MT Bold",
+    color: "#0A83F9",
     textAlign: "center",
     fontWeight: "bold",
-    mt: 2,
-    mb: 1,
+    marginBottom: 8,
   },
   subTitle: {
-    color: "#FFD700", // 金黄色
-    fontFamily: "Garamond", // 更正式的字体
-    fontWeight: "bold",
+    fontSize: 22,
+    color: "#FFD700",
     textAlign: "center",
-    mb: 3,
+    fontWeight: "bold",
+    marginBottom: 16,
   },
-  loginButton: {
-    marginTop: 2,
-    marginBottom: 1,
-    boxShadow: 3, // 添加阴影
-    "&:hover": {
-      boxShadow: 6, // 鼠标悬停时增加阴影
-    },
+  input: {
+    marginBottom: 10,
   },
-  registerButton: {
-    marginTop: 1,
-    boxShadow: 1,
-    "&:hover": {
-      boxShadow: 4,
-    },
+  checkboxContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 10,
   },
-};
+  button: {
+    marginTop: 10,
+  },
+});

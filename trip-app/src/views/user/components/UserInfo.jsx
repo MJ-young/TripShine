@@ -1,16 +1,11 @@
-import React, { useRef, useState, useEffect } from "react";
-import {
-  Box,
-  Avatar,
-  Typography,
-  Button,
-  CircularProgress,
-} from "@mui/material";
-import AddCircleIcon from "@mui/icons-material/AddCircle";
-import { updateAvatar } from "@/api/user";
+import React, { useState, useEffect } from "react";
+import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
+import { Avatar, IconButton } from "react-native-paper";
+import * as ImagePicker from "expo-image-picker";
 import { useSelector, useDispatch } from "react-redux";
 import { updateUser } from "@/store/actions";
-import { getUserCookie } from "@/utils/auth";
+import { updateAvatar } from "@/api/user";
+import { base64ToFile } from "@/utils/upload";
 
 const initUserInfo = {
   username: "Guest",
@@ -21,29 +16,44 @@ const initUserInfo = {
 const UserInfo = () => {
   const dispatch = useDispatch();
   const user = useSelector((state) => state.user);
-  const fileInputRef = useRef(null);
   const [userInfo, setUserInfo] = useState(initUserInfo);
 
   useEffect(() => {
-    // 当用户信息发生变化时，更新用户信息
-    // if (user) {
-    //   setUserInfo(user);
-    // } else {
-    const userInfo = getUserCookie();
+    const userInfo = user.user;
     setUserInfo(userInfo);
-    console.log("userInfo:", userInfo);
-    // }
   }, [user]);
 
-  const handleAvatarChange = () => {
-    fileInputRef.current.click(); // 触发文件选择
-  };
+  const handleAvatarChange = async () => {
+    // Request media library permissions
+    const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    if (status !== "granted") {
+      alert("请允许访问相册权限");
+      return;
+    }
 
-  const handleFileChange = (event) => {
-    const file = event.target.files[0];
-    if (file) {
+    // Launch the picker
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      base64: true,
+      allowsEditing: true,
+      aspect: [1, 1], // Ensure the image is square
+      quality: 1,
+    });
+
+    if (!result.cancelled) {
+      let localUri = result.assets[0].uri;
+      const parts = localUri.match(/^data:(.+);base64,(.+)$/);
       const formData = new FormData();
-      formData.append("avatar", file);
+      if (parts) {
+        const file = await base64ToFile(localUri);
+        formData.append("avatar", file);
+      } else {
+        let filename = localUri.split("/").pop();
+        let match = /\.(\w+)$/.exec(filename);
+        let type = match ? `image/${match[1]}` : `image`;
+
+        formData.append("avatar", { uri: localUri, name: filename, type });
+      }
       updateAvatar(formData)
         .then((response) => {
           dispatch(updateUser({ avatar: response.url }));
@@ -56,50 +66,67 @@ const UserInfo = () => {
   };
 
   return (
-    <Box
-      sx={{
-        display: "flex",
-        alignItems: "center",
-        padding: 2,
-      }}
-    >
-      <Box sx={{ position: "relative" }}>
-        <Avatar
-          // alt="User Avatar"
-          src={userInfo.avatar}
-          sx={{ width: 96, height: 96 }}
+    <View style={styles.container}>
+      <View style={styles.avatarContainer}>
+        <Avatar.Image source={{ uri: userInfo.avatar }} size={96} />
+        <IconButton
+          icon="pencil-circle"
+          size={32}
+          style={styles.iconButton}
+          color="#6200ee"
+          onPress={handleAvatarChange}
         />
-        <Button
-          sx={{
-            position: "absolute",
-            bottom: 0,
-            right: -10,
-            minWidth: "auto",
-            padding: "6px",
-            borderRadius: "50%",
-          }}
-          onClick={handleAvatarChange}
-        >
-          <AddCircleIcon sx={{ color: "primary.main" }} />
-        </Button>
-        <input
-          type="file"
-          ref={fileInputRef}
-          style={{ display: "none" }}
-          onChange={handleFileChange}
-          accept="image/*" // 只接受图片文件
-        />
-      </Box>
-      <Box sx={{ marginLeft: 2.5, flex: 1 }}>
-        <Typography variant="h6" component="div" sx={{ color: "text.primary" }}>
-          {userInfo.username}
-        </Typography>
-        <Typography variant="body2" sx={{ color: "text.secondary" }}>
-          我正在努力创作中......
-        </Typography>
-      </Box>
-    </Box>
+      </View>
+      <View style={styles.infoContainer}>
+        <Text style={styles.username}>{userInfo.username}</Text>
+        <Text style={styles.description}>我正在努力创作中......</Text>
+      </View>
+    </View>
   );
 };
 
 export default UserInfo;
+
+const styles = StyleSheet.create({
+  container: {
+    flexDirection: "row",
+    alignItems: "center",
+    paddingBottom: 10,
+    paddingHorizontal: 16,
+  },
+  avatarContainer: {
+    position: "relative",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  iconButton: {
+    position: "absolute",
+    right: -10,
+    bottom: 0,
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    backgroundColor: "#FFFFFF", // Assuming you want a white background for the icon
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  addButton: {
+    position: "absolute",
+    bottom: 0,
+    right: -10,
+    borderRadius: 50,
+  },
+  infoContainer: {
+    marginLeft: 20,
+    flex: 1,
+  },
+  username: {
+    fontSize: 18,
+    fontWeight: "bold",
+    color: "black",
+  },
+  description: {
+    fontSize: 14,
+    color: "gray",
+  },
+});

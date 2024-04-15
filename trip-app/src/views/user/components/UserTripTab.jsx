@@ -1,52 +1,30 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { useFocusEffect } from "@react-navigation/native";
 import {
-  Box,
-  Tabs,
-  Tab,
-  List,
-  ListItem,
-  ListItemText,
+  View,
+  Text,
+  StyleSheet,
+  FlatList,
+  TouchableOpacity,
+  ScrollView,
+  Image,
+} from "react-native";
+import { useFocusEffect, useNavigation } from "@react-navigation/native";
+import {
+  ActivityIndicator,
   Divider,
-  CircularProgress,
-  IconButton,
-} from "@mui/material";
-import Chip from "@mui/material/Chip";
-import Typography from "@mui/material/Typography";
-import RefreshIcon from "@mui/icons-material/Refresh";
+  List,
+  Avatar,
+  Button,
+} from "react-native-paper";
 import { getUserTrips } from "@/api/trip";
-import { useNavigation } from "@react-navigation/native";
 import formatDate from "@/utils/formatDate";
 
 const UserTripTab = () => {
   const navigation = useNavigation();
-  const [tabIndex, setTabIndex] = useState(0);
-  const [diaries, setDiaries] = useState({
-    passed: null,
-    waiting: null,
-    rejected: null,
-  });
+  const [index, setIndex] = useState(0);
+  const [diaries, setDiaries] = useState({ pass: [], wait: [], reject: [] });
   const [loading, setLoading] = useState(false);
-
-  const handleChange = (event, newValue) => {
-    setTabIndex(newValue);
-    if (!diaries[getStatus(newValue)]) {
-      loadDiaries(getStatus(newValue));
-    }
-  };
-
-  const getStatus = (index) => {
-    switch (index) {
-      case 0:
-        return "pass";
-      case 1:
-        return "wait";
-      case 2:
-        return "reject";
-      default:
-        return null;
-    }
-  };
+  const statuses = ["pass", "wait", "reject"];
 
   const loadDiaries = async (status) => {
     setLoading(true);
@@ -64,14 +42,10 @@ const UserTripTab = () => {
       });
   };
 
-  const handleRefresh = () => {
-    loadDiaries(getStatus(tabIndex));
-  };
-
   useFocusEffect(
     useCallback(() => {
-      loadDiaries(getStatus(tabIndex));
-    }, [tabIndex])
+      loadDiaries(statuses[index]);
+    }, [index])
   );
 
   const handleItemClick = (diary) => {
@@ -79,100 +53,64 @@ const UserTripTab = () => {
   };
 
   return (
-    <Box sx={{ width: "100%", bgcolor: "background.paper" }}>
-      <Box
-        sx={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          p: 1,
-        }}
-      >
-        <Tabs
-          value={tabIndex}
-          onChange={handleChange}
-          aria-label="Travel Diary Tabs"
-        >
-          <Tab label="已审核" />
-          <Tab label="待审核" />
-          <Tab label="审核拒绝" />
-        </Tabs>
-        <IconButton onClick={handleRefresh} color="primary">
-          <RefreshIcon />
-        </IconButton>
-      </Box>
-      {loading ? (
-        <Box sx={{ display: "flex", justifyContent: "center", p: 3 }}>
-          <CircularProgress />
-        </Box>
-      ) : (
-        <List component="nav" aria-label="travel diaries">
-          {diaries[getStatus(tabIndex)]?.map((diary) => (
-            <React.Fragment key={diary._id}>
-              <ListItem button onClick={() => handleItemClick(diary)}>
-                <Box
-                  sx={{
-                    width: 50,
-                    height: 50,
-                    overflow: "hidden",
-                    marginRight: 2,
-                  }}
-                >
-                  <img
-                    src={diary.images[0]}
-                    alt={diary.title}
-                    style={{
-                      width: "100%",
-                      height: "100%",
-                      objectFit: "cover",
-                    }}
+    <View style={styles.container}>
+      <View style={styles.tabs}>
+        {statuses.map((status, idx) => (
+          <Button
+            key={status}
+            mode={index === idx ? "contained" : "outlined"}
+            onPress={() => setIndex(idx)}
+          >
+            {status}
+          </Button>
+        ))}
+      </View>
+      <View style={styles.listContainer}>
+        {loading ? (
+          <ActivityIndicator animating={true} style={{ marginTop: 30 }} />
+        ) : (
+          <FlatList
+            data={diaries[statuses[index]]}
+            keyExtractor={(item) => item._id}
+            renderItem={({ item }) => (
+              <List.Item
+                title={item.title}
+                description={`创建时间: ${formatDate(item.createTime)}`}
+                left={() => (
+                  <Image
+                    source={{ uri: item.images[0] }}
+                    style={{ width: 60, height: 60 }}
                   />
-                </Box>
-                <ListItemText
-                  primary={diary.title}
-                  secondary={
-                    <>
-                      {getStatus(tabIndex) != "reject" && (
-                        <>
-                          <Typography component="span" variant="body2">
-                            创建时间: {formatDate(diary.createTime)}
-                          </Typography>
-                          <br />
-                        </>
-                      )}
-                      {getStatus(tabIndex) == "reject" && (
-                        <>
-                          <Chip
-                            label="拒绝原因"
-                            color="secondary"
-                            size="small"
-                            sx={{ mr: 1, bgcolor: "error.main" }}
-                          />
-                          <Typography
-                            component="span"
-                            variant="body2"
-                            color="text.primary"
-                          >
-                            {diary.rejectReason}
-                          </Typography>
-                          <br />
-
-                          <Typography component="span" variant="body2">
-                            审核时间: {formatDate(diary.updateTime)}
-                          </Typography>
-                        </>
-                      )}
-                    </>
-                  }
-                />
-              </ListItem>
-              <Divider />
-            </React.Fragment>
-          ))}
-        </List>
-      )}
-    </Box>
+                )}
+                onPress={() => handleItemClick(item)}
+                right={() =>
+                  index === 2 && (
+                    <Text style={{ color: "red" }}>{item.rejectReason}</Text>
+                  )
+                }
+              />
+            )}
+            ItemSeparatorComponent={() => <Divider />}
+          />
+        )}
+      </View>
+    </View>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    margin: 10,
+  },
+  tabs: {
+    flexDirection: "row",
+    justifyContent: "space-around",
+    paddingVertical: 10,
+  },
+  listContainer: {
+    flex: 1,
+  },
+});
 
 export default UserTripTab;

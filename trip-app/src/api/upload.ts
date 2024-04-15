@@ -7,9 +7,9 @@ interface UploadResponse {
 }
 
 export const upload = (file: FormData): Promise<UploadResponse> => {
-  console.log("file", file);
+  console.log("upload file", file);
   return request({
-    url: "/api/trip/upload",
+    url: "/api/trip/upload/",
     method: "post",
     data: file,
     headers: {

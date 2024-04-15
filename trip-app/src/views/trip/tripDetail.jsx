@@ -1,23 +1,30 @@
 import React, { useState } from "react";
-import {
-  View,
-  Text,
-  Image,
-  StyleSheet,
-  TouchableOpacity,
-  ScrollView,
-} from "react-native";
+import { View, Text, Image, StyleSheet, TouchableOpacity } from "react-native";
 import Swiper from "react-native-swiper";
 import icon_share from "@/assets/icon/icon_share.png";
+// import Share from "react-native-share";
 
 const TripDetail = ({ route }) => {
   const { title, content, username, avatar, images, createTime } = route.params;
   const [activeIndex, setActiveIndex] = useState(0);
 
-  const handleShare = () => {
-    // 在此处添加分享逻辑
-    console.log("分享功能待实现");
+  const onShare = async () => {
+    // const options = {
+    //   title: "分享",
+    //   message: "看看这个超棒的内容：",
+    //   url: "https://example.com",
+    //   type: "image/png", // 如果分享图片
+    // };
+    // try {
+    //   const result = await Share.open(options);
+    //   if (result.success) {
+    //     console.log("成功分享！");
+    //   }
+    // } catch (error) {
+    //   console.error("分享失败：" + error.message);
+    // }
   };
+
   const onIndexChanged = (index) => {
     setActiveIndex(index);
   };
@@ -48,7 +55,7 @@ const TripDetail = ({ route }) => {
             <Text style={styles.authorName}>{username}</Text>
             <Text style={styles.createdAt}>{createTime.slice(0, 10)}</Text>
           </View>
-          <TouchableOpacity onPress={handleShare}>
+          <TouchableOpacity onPress={onShare}>
             <Image source={icon_share} style={styles.shareIcon} />
           </TouchableOpacity>
         </View>

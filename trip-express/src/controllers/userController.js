@@ -111,23 +111,30 @@ exports.getUserInfo = async (req, res) => {
 // 上传用户头像
 exports.uploadAvatar = async (req, res) => {
   try {
-    // 文件字段名假设为'avatar'
     upload.single("avatar")(req, res, async function (err) {
       if (err instanceof multer.MulterError) {
-        // 发生错误
         return res.status(500).json({ message: err.message });
       } else if (err) {
-        // 发生未知错误
         return res.status(500).json({ message: "文件上传失败" });
       }
       const userId = req.userId;
-      // 上传成功，req.file 包含了文件的信息
       const file = req.file;
-      console.log(file);
-      // 将数据库中的用户头像字段更新为上传的文件url
-      await User.findByIdAndUpdate(userId, { avatar: file.url });
-
-      res.status(200).json({ url: file.url, message: "上传成功" });
+      try {
+        const updatedUser = await User.findByIdAndUpdate(
+          userId,
+          { avatar: file.url },
+          { new: true }
+        );
+        if (!updatedUser) {
+          console.log("未找到用户或更新失败");
+          return res.status(404).json({ message: "未找到用户或更新失败" });
+        }
+        console.log("数据库更新成功");
+        res.status(200).json({ url: file.url, message: "上传成功" });
+      } catch (updateError) {
+        console.error("更新用户头像时出错:", updateError);
+        return res.status(500).json({ message: "更新数据库时出错" });
+      }
     });
   } catch (error) {
     return res.status(500).json({ message: error.message });

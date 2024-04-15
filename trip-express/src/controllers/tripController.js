@@ -82,6 +82,7 @@ exports.updateTrip = async (req, res) => {
     });
     return res.status(200).json({ data: updatedTrip });
   } catch (error) {
+    console.log("updateTrip error:", error); // 'updateTrip error: Cannot read property 'userId' of null
     return res.status(500).json({ message: error.message });
   }
 };
@@ -274,8 +275,6 @@ exports.getTripByAuditStatus = async (req, res) => {
 
 // 上传游记图片列表或视频
 exports.uploadTripMedia = (req, res) => {
-  // req.file 是base64字符串
-  // const blob = base64ToBlob(req.file);
   upload.single("file")(req, res, function (err) {
     if (err instanceof multer.MulterError) {
       // 发生错误

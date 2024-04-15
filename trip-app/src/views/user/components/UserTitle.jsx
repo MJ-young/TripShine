@@ -1,54 +1,23 @@
 import React from "react";
-import { View, TouchableOpacity, Image, StyleSheet } from "react-native";
+import { Appbar } from "react-native-paper";
 import icon_menu from "@/assets/icon/icon_menu.png";
 import icon_share from "@/assets/icon/icon_share.png";
-// import { sideMenuRef } from "../SideMenu";
+import icon_exit from "@/assets/icon/icon_exit.png";
+import { useDispatch } from "react-redux";
+import { clearUser } from "@/store/actions";
+import { useNavigation } from "@react-navigation/native";
 
 export const UserTitle = () => {
+  const dispatch = useDispatch();
+  const navigation = useNavigation();
+  const logout = () => {
+    dispatch(clearUser());
+    navigation.navigate("Login");
+  };
   return (
-    <View style={styles.titleLayout}>
-      <TouchableOpacity
-        style={styles.menuButton}
-        onPress={() => {
-          // sideMenuRef.current?.show();
-        }}
-      >
-        <Image
-          style={styles.menuImg}
-          source={icon_menu}
-          tintColor={"white"}
-          resizeMode="contain"
-        />
-      </TouchableOpacity>
-      <View style={{ flex: 1 }} />
-      <Image
-        style={[styles.menuImg, styles.rightMenuImg]}
-        source={icon_share}
-        tintColor={"white"}
-        resizeMode="contain"
-      />
-    </View>
+    <Appbar.Header style={{ backgroundColor: "transparent" }}>
+      <Appbar.Content />
+      <Appbar.Action icon={icon_exit} color="white" onPress={logout} />
+    </Appbar.Header>
   );
 };
-
-const styles = StyleSheet.create({
-  titleLayout: {
-    width: "100%",
-    // height: 48,
-    paddingTop: 10,
-    flexDirection: "row",
-    alignItems: "center",
-  },
-  menuButton: {
-    height: "100%",
-    paddingHorizontal: 16,
-    justifyContent: "center",
-  },
-  menuImg: {
-    width: 28,
-    height: 28,
-  },
-  rightMenuImg: {
-    marginHorizontal: 12,
-  },
-});
