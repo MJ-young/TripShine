@@ -2,10 +2,9 @@ import React, { useState, useEffect } from "react";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import { Avatar, IconButton } from "react-native-paper";
 import * as ImagePicker from "expo-image-picker";
-import { useSelector, useDispatch } from "react-redux";
-import { updateUser } from "@/store/actions";
 import { updateAvatar } from "@/api/user";
 import { base64ToFile } from "@/utils/upload";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const initUserInfo = {
   username: "Guest",
@@ -14,50 +13,60 @@ const initUserInfo = {
 };
 
 const UserInfo = () => {
-  const dispatch = useDispatch();
-  const user = useSelector((state) => state.user);
   const [userInfo, setUserInfo] = useState(initUserInfo);
+  const [token, setToken] = useState(null);
 
   useEffect(() => {
-    const userInfo = user.user;
-    setUserInfo(userInfo);
-  }, [user]);
+    const loadUserInfo = async () => {
+      const _authData = await AsyncStorage.getItem("@AuthData");
+      const user = _authData ? JSON.parse(_authData) : { user: initUserInfo };
+      // console.log("user:", user);
+      setUserInfo(user.user);
+      setToken(user.token);
+    };
+
+    loadUserInfo();
+  }, []);
 
   const handleAvatarChange = async () => {
-    // Request media library permissions
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
     if (status !== "granted") {
       alert("请允许访问相册权限");
       return;
     }
 
-    // Launch the picker
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
       base64: true,
       allowsEditing: true,
-      aspect: [1, 1], // Ensure the image is square
+      aspect: [1, 1],
       quality: 1,
     });
 
-    if (!result.cancelled) {
+    if (!result.canceled) {
       let localUri = result.assets[0].uri;
+      // console.log("update avatar", result.assets[0]);
       const parts = localUri.match(/^data:(.+);base64,(.+)$/);
       const formData = new FormData();
       if (parts) {
-        const file = await base64ToFile(localUri);
+        const file = base64ToFile(localUri);
+        // console.log("webfile:", file);
         formData.append("avatar", file);
       } else {
         let filename = localUri.split("/").pop();
         let match = /\.(\w+)$/.exec(filename);
         let type = match ? `image/${match[1]}` : `image`;
-
         formData.append("avatar", { uri: localUri, name: filename, type });
       }
       updateAvatar(formData)
-        .then((response) => {
-          dispatch(updateUser({ avatar: response.url }));
-          setUserInfo((prev) => ({ ...prev, avatar: response.url }));
+        .then(async (response) => {
+          // 更新本地存储的用户信息
+          const updatedUserInfo = { ...userInfo, avatar: response.url };
+          await AsyncStorage.setItem(
+            "@AuthData",
+            JSON.stringify({ user: updatedUserInfo, token })
+          );
+          setUserInfo(updatedUserInfo);
         })
         .catch((error) => {
           console.error("Error updating avatar:", error);

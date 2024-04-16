@@ -17,6 +17,7 @@ const ImageUploader = ({ images, setImages }) => {
     });
     if (!result.canceled) {
       const imgData = result.assets[0];
+      console.log("uploader imgData:", imgData);
       let localUri = imgData.uri;
       const parts = localUri.match(/^data:(.+);base64,(.+)$/);
       if (parts) {
@@ -25,9 +26,11 @@ const ImageUploader = ({ images, setImages }) => {
           imgData.fileName,
           imgData.mimeType
         );
+        console.log("weburl:", weburl);
         setImages([...images, weburl]);
       } else {
         const url = await uploadImageByUri(localUri);
+        console.log("url:", url);
         setImages([...images, url]);
       }
     }

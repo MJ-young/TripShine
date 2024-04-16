@@ -1,8 +1,10 @@
 import request from "@/utils/request";
 
 export interface User {
+  userId?: string;
   username: string;
   password: string;
+  avatar?: string;
 }
 
 interface LoginResponse {

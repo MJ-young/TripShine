@@ -21,7 +21,6 @@ export function removeToken() {
 }
 
 export function setUserCookie(user: User) {
-  console.log("setUserCookie", user);
   Cookies.set("userId", user.userId);
   Cookies.set("username", user.username);
   Cookies.set("avatar", user.avatar);

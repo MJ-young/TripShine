@@ -10,7 +10,6 @@ import {
 export const setUser = (userData) => {
   setToken(userData.token);
   setUserCookie(userData.user);
-  console.log("正在设置用户信息", userData);
   return {
     type: SET_USER,
     payload: userData,

@@ -58,7 +58,9 @@
     "react-slick": "^0.30.2",
     "redux": "^5.0.1",
     "typescript": "^5.3.0",
-    "yup": "^1.4.0"
+    "yup": "^1.4.0",
+    "@react-native-async-storage/async-storage": "1.21.0",
+    "react-native-gesture-handler": "~2.14.0"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0"

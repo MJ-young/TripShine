@@ -4,6 +4,7 @@ const multer = require("multer");
 const { deleteFilesFromOSS } = require("../utils/ossService");
 const User = require("../models/user");
 const { base64ToBlob } = require("../utils/base64ToBlob");
+const mongoose = require("mongoose");
 
 // 创建游记
 exports.createTrip = async (req, res) => {
@@ -28,24 +29,58 @@ exports.createTrip = async (req, res) => {
 // 获取所有游记
 exports.getAllTrips = async (req, res) => {
   try {
-    // 获取所有状态为审核通过的游记
-    // 现在进行分页查询，假设req.query中有page和limit参数,我需要对page和limit进行校验返回对应的数据
     const page = parseInt(req.query.pageNum) || 1;
-    const limit = parseInt(req.query.pageSize) || 10;
+    const limit = parseInt(req.query.pageSize) || 20;
     const skip = (page - 1) * limit;
-    // 按照创建时间倒序排列，最新的游记在前面
-    const trips = await Trip.find({ auditStatus: "pass", isDeleted: false })
-      .sort({ createTime: -1 })
-      .skip(skip)
-      .limit(limit);
-    // 返回数据时，需要返回总数，方便前端进行分页
+
+    // 使用聚合管道来合并用户信息
+    const trips = await Trip.aggregate([
+      { $match: { auditStatus: "pass", isDeleted: false } },
+      { $sort: { createTime: -1 } },
+      { $skip: skip },
+      { $limit: limit },
+      {
+        $addFields: {
+          userIdObjectId: { $toObjectId: "$userId" }, // 转换userId为ObjectId
+        },
+      },
+      {
+        $lookup: {
+          from: "users", // 确保这是正确的集合名称
+          localField: "userIdObjectId",
+          foreignField: "_id",
+          as: "userInfo",
+        },
+      },
+      {
+        $unwind: {
+          path: "$userInfo",
+          preserveNullAndEmptyArrays: true,
+        },
+      },
+      {
+        $addFields: {
+          username: "$userInfo.username",
+          avatar: "$userInfo.avatar",
+        },
+      },
+      {
+        $project: {
+          userInfo: 0,
+          userIdObjectId: 0, // 移除辅助字段
+        },
+      },
+    ]);
+
     const total = await Trip.countDocuments({
       auditStatus: "pass",
       isDeleted: false,
     });
+
     if (skip >= total && total !== 0) {
       return res.status(404).json({ message: "页码超出范围" });
     }
+    // console.log("trips:", trips);
     res.status(200).json({ data: trips, total });
   } catch (error) {
     return res.status(500).json({ message: error.message });
@@ -124,7 +159,6 @@ exports.deleteTrip = async (req, res) => {
 // 通过关键词搜索游记
 exports.searchTrip = async (req, res) => {
   try {
-    console.log(req);
     // 使用正则表达式进行模糊搜索,搜索标题中包含关键词的游记
     const titleTrips = await Trip.find({
       title: { $regex: req.query.keyword },

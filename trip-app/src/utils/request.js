@@ -1,8 +1,7 @@
 import axios from "axios";
-import store from "@/store";
-import NavigationService from "./NavigationService";
 import Toast from "react-native-toast-message";
 import Constants from "expo-constants";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export const isRelogin = { show: false };
 axios.defaults.headers["Content-Type"] = "application/json;charset=utf-8";
@@ -24,10 +23,16 @@ const service = axios.create({
 
 // 请求拦截器
 service.interceptors.request.use(
-  (config) => {
+  async (config) => {
     // 是否需要设置 token
     const isToken = (config.headers || {}).isToken === false;
-    const token = store.getState().user.token; // Access token from Redux store
+    let token = null;
+    const authDataSerialized = await AsyncStorage.getItem("@AuthData");
+    if (authDataSerialized) {
+      //If there are data, it's converted to an Object and the state is updated.
+      const _authData = JSON.parse(authDataSerialized);
+      token = _authData.token;
+    }
     if (token && !isToken) {
       config.headers["Authorization"] = `Bearer ${token}`; // 设置请求头的Authorization
     }
@@ -70,7 +75,8 @@ service.interceptors.response.use(
         topOffset: 30,
         onShow: () => {},
         onHide: () => {
-          NavigationService.navigate("Login");
+          // 移除本地存储的用户信息
+          AsyncStorage.removeItem("@AuthData");
         },
       });
     } else {

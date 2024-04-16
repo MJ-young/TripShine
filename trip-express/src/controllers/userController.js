@@ -30,7 +30,7 @@ exports.registerUser = async (req, res) => {
       };
       const token = jwt.sign(payload, secretKey, {
         // 测试时设置token过期时间
-        expiresIn: "20m",
+        expiresIn: "4h",
       });
       const userInfo = {
         userId: savedUser._id,
@@ -71,7 +71,7 @@ exports.loginUser = async (req, res) => {
       // 生成token
       const token = jwt.sign(payload, secretKey, {
         // 测试时设置token过期时间为2分钟
-        expiresIn: "20m",
+        expiresIn: "4h",
       });
       const userInfo = {
         userId: user._id,
@@ -113,8 +113,10 @@ exports.uploadAvatar = async (req, res) => {
   try {
     upload.single("avatar")(req, res, async function (err) {
       if (err instanceof multer.MulterError) {
+        console.error("文件上传失败multer:", err);
         return res.status(500).json({ message: err.message });
       } else if (err) {
+        console.error("文件上传失败:", err);
         return res.status(500).json({ message: "文件上传失败" });
       }
       const userId = req.userId;
@@ -137,6 +139,7 @@ exports.uploadAvatar = async (req, res) => {
       }
     });
   } catch (error) {
+    console.error("上传头像时出错:", error);
     return res.status(500).json({ message: error.message });
   }
 };
