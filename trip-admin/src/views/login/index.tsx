@@ -42,7 +42,7 @@ export default function LoginPage() {
     setLoading(true);
     login(form.getFieldsValue())
       .then((response) => {
-        console.log("login success:", response);
+        // console.log("login success:", response);
         setLoading(false);
         const payload = {
           user: response.userInfo,

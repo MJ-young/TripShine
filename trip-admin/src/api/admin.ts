@@ -12,6 +12,7 @@ interface FetchAdminsParams {
 
 export interface Admin {
   _id: string;
+  userId: string;
   username: string;
   password: string;
   role: string;
@@ -37,8 +38,12 @@ export const deleteUser = (id: string): Promise<unknown> => {
   });
 };
 
+interface AddAdminResponse {
+  message: string;
+  userInfo: Admin;
+}
 // addAdmin
-export const addAdmin = (data: Admin): Promise<unknown> => {
+export const addAdmin = (data: Admin): Promise<AddAdminResponse> => {
   return request({
     url: `/api/admin/user`,
     method: "post",

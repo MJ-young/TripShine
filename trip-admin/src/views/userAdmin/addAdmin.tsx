@@ -4,7 +4,7 @@ import { Button, Modal, Form, Input } from "antd";
 import { addAdmin } from "@/api/admin";
 import { UserOutlined, LockOutlined } from "@ant-design/icons";
 
-export default function AddAdmin() {
+export default function AddAdmin({ onAdd }) {
   const [visible, setVisible] = useState(false);
   const [form] = Form.useForm();
 
@@ -14,6 +14,11 @@ export default function AddAdmin() {
         console.log(response);
         setVisible(false);
         form.resetFields();
+        const newAdmin = {
+          ...response.userInfo,
+          _id: response.userInfo.userId,
+        };
+        onAdd(newAdmin);
       });
     } catch (error) {
       console.error("Error adding admin:", error);

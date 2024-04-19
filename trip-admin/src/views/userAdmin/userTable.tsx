@@ -104,7 +104,7 @@ const UserTable = () => {
 
   return (
     <>
-      <AddAdmin />
+      <AddAdmin onAdd={(admin) => setAdmins([...admins, admin])} />
       <Table
         rowKey={"_id"}
         loading={loading}
