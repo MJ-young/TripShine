@@ -1,11 +1,19 @@
 import { Modal, Button, List, Avatar, notification } from "antd";
-import { Swiper, SwiperSlide } from "swiper/react";
 import RejectTripModal from "./RejectTripModal";
 import "swiper/css";
 import "./index.scss";
 import formatDate from "@/utils/formatDate";
 import { passTrip } from "@/api/trip";
 import { useState } from "react";
+import { Navigation, Pagination, Scrollbar, A11y } from "swiper/modules";
+
+import { Swiper, SwiperSlide } from "swiper/react";
+
+// Import Swiper styles
+import "swiper/css";
+import "swiper/css/navigation";
+import "swiper/css/pagination";
+import "swiper/css/scrollbar";
 
 const TripDetailModal = ({ isVisible, onClose, trip }) => {
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -59,11 +67,12 @@ const TripDetailModal = ({ isVisible, onClose, trip }) => {
           </List.Item>
           <List.Item>
             <Swiper
+              // install Swiper modules
+              modules={[Navigation, Pagination, Scrollbar, A11y]}
               spaceBetween={50}
               slidesPerView={1}
-              autoplay={{ delay: 2500 }}
-              loop={false}
-              className="swiper-container"
+              navigation
+              pagination={{ clickable: true }}
             >
               {trip.images.map((image, index) => (
                 <SwiperSlide key={index} className="swiper-slide">

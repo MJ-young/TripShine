@@ -15,8 +15,6 @@ const User = () => {
       <UserTitle />
       <Image style={[styles.bgImg, { height: 200 }]} source={icon_mine_bg} />
       <UserInfo />
-      {/* <UserTabs tabIndex={tabIndex} setTabIndex={setTabIndex} /> */}
-      {/* <UserTrips trips={trips[tabIndex]} tabIndex={tabIndex} /> */}
       <UserTripTab />
     </View>
   );

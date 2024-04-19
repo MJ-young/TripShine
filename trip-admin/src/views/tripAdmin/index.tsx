@@ -86,6 +86,8 @@ const TripAdmin = () => {
       title: "内容",
       dataIndex: "content",
       key: "content",
+      // 设置内容的最大宽度，超出部分显示为...
+      ellipsis: true,
     },
     {
       title: "作者",
@@ -96,7 +98,7 @@ const TripAdmin = () => {
       title: "创建时间",
       dataIndex: "createTime",
       key: "createTime",
-      render: (_text, record) => formatDate(record.createTime.$date),
+      render: (_text, record) => formatDate(record.createTime),
     },
     {
       title: "状态",

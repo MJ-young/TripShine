@@ -78,7 +78,6 @@ export const updateTrip = (params: {
   content: string;
   images: string[];
 }): Promise<Trip> => {
-  console.log(params);
   return request({
     url: `/api/trip/${params._id}`,
     method: "put",

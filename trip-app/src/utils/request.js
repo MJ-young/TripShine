@@ -18,7 +18,7 @@ if (Constants.expoConfig) {
 // 创建axios实例
 const service = axios.create({
   baseURL: baseURL,
-  timeout: 5000, // 请求超时时间
+  timeout: 20000, // 请求超时时间
 });
 
 // 请求拦截器

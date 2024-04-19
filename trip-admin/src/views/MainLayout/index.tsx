@@ -1,6 +1,6 @@
 // MainLayout.tsx
 import React, { ReactNode, useState } from "react";
-import { getToken, removeToken } from "@/utils/auth";
+import { getToken } from "@/utils/auth";
 import { useNavigate, Link, Navigate } from "react-router-dom";
 import { Layout, Menu, Button, Modal } from "antd";
 import {
@@ -12,6 +12,7 @@ import {
 import "./common.less";
 import Cookies from "js-cookie";
 import menuItems from "./menuItems";
+import { clearUser } from "@/store/actions";
 
 const { Header, Sider, Content } = Layout;
 
@@ -45,7 +46,9 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
       title: "确认退出登录？",
       onOk: () => {
         // 清除token
-        removeToken();
+        // removeToken();
+        // removeUser();
+        clearUser();
         // 跳转到登录页面
         navigate("/");
       },

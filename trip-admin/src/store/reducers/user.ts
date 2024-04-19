@@ -23,7 +23,6 @@ const userReducer = (state = initialState, action) => {
       };
     case CLEAR_USER:
       return {
-        ...state,
         user: null,
         token: "",
       };

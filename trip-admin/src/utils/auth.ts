@@ -13,3 +13,10 @@ export function setToken(token: string) {
 export function removeToken() {
   return Cookies.remove(TokenKey);
 }
+
+export function removeUser() {
+  Cookies.remove("adminName");
+  Cookies.remove("adminPwd");
+  Cookies.remove("adminRemember");
+  Cookies.remove("adminRole");
+}

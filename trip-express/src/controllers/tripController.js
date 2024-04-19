@@ -10,12 +10,9 @@ const mongoose = require("mongoose");
 exports.createTrip = async (req, res) => {
   try {
     const userId = req.userId;
-    const author = await User.findById(userId);
     const tripData = {
       ...req.body,
       userId: userId,
-      username: author.username,
-      avatar: author.avatar,
     };
     const newTrip = new Trip(tripData);
     // 获取保存之后的新游记对象
@@ -156,23 +153,52 @@ exports.deleteTrip = async (req, res) => {
   }
 };
 
-// 通过关键词搜索游记
 exports.searchTrip = async (req, res) => {
   try {
-    // 使用正则表达式进行模糊搜索,搜索标题中包含关键词的游记
-    const titleTrips = await Trip.find({
-      title: { $regex: req.query.keyword },
-      auditStatus: "pass",
-      isDeleted: false,
-    });
-    // 获取用户名中包含关键词用户及其游记列表
-    const userTrips = await Trip.find({
-      username: { $regex: req.query.keyword },
-      auditStatus: "pass",
-      isDeleted: false,
-    });
-    // 整理返回的数据，去重
-    const trips = [...titleTrips, ...userTrips];
+    const keyword = req.query.keyword;
+    const regex = new RegExp(keyword, "i"); // 不区分大小写的搜索
+
+    const trips = await Trip.aggregate([
+      {
+        $match: {
+          $or: [{ title: { $regex: regex } }, { username: { $regex: regex } }],
+          auditStatus: "pass",
+          isDeleted: false,
+        },
+      },
+      {
+        $addFields: {
+          userIdObjectId: { $toObjectId: "$userId" },
+        },
+      },
+      {
+        $lookup: {
+          from: "users",
+          localField: "userIdObjectId",
+          foreignField: "_id",
+          as: "userInfo",
+        },
+      },
+      {
+        $unwind: {
+          path: "$userInfo",
+          preserveNullAndEmptyArrays: true,
+        },
+      },
+      {
+        $addFields: {
+          username: "$userInfo.username",
+          avatar: "$userInfo.avatar",
+        },
+      },
+      {
+        $project: {
+          userInfo: 0,
+          userIdObjectId: 0, // 移除辅助字段
+        },
+      },
+    ]);
+
     res.status(200).json({ data: trips });
   } catch (error) {
     return res.status(500).json({ message: error.message });
@@ -182,38 +208,73 @@ exports.searchTrip = async (req, res) => {
 // 获取访问接口的用户某个审核状态的所有游记（需要鉴权）
 exports.getTripByStatus = async (req, res) => {
   try {
-    const userId = req.userId;
     // 判断传入status是否合法
     if (!["all", "pass", "reject", "wait"].includes(req.params.status)) {
       throw new Error("status参数不合法");
     }
-    // 分页查询
+    const userId = req.userId;
+    const status = req.params.status;
     const page = parseInt(req.query.pageNum) || 1;
     const limit = parseInt(req.query.pageSize) || 10;
     const skip = (page - 1) * limit;
 
+    const trips = await Trip.aggregate([
+      {
+        $match: {
+          userId: userId,
+          auditStatus: status === "all" ? { $ne: null } : status,
+          isDeleted: false,
+        },
+      },
+      { $sort: { createTime: -1 } },
+      { $skip: skip },
+      { $limit: limit },
+      {
+        $addFields: {
+          userIdObjectId: { $toObjectId: "$userId" },
+        },
+      },
+      {
+        $lookup: {
+          from: "users",
+          localField: "userIdObjectId",
+          foreignField: "_id",
+          as: "userInfo",
+        },
+      },
+      {
+        $unwind: {
+          path: "$userInfo",
+          preserveNullAndEmptyArrays: true,
+        },
+      },
+      {
+        $addFields: {
+          username: "$userInfo.username",
+          avatar: "$userInfo.avatar",
+        },
+      },
+      {
+        $project: {
+          userInfo: 0,
+          userIdObjectId: 0, // 移除辅助字段
+        },
+      },
+    ]);
+
     const total = await Trip.countDocuments({
-      userId: req.userId,
-      // userId: req.query.userId,
-      auditStatus:
-        req.params.status === "all" ? { $ne: null } : req.params.status,
+      userId: userId,
+      auditStatus: status === "all" ? { $ne: null } : status,
       isDeleted: false,
     });
+
     if (skip >= total && total !== 0) {
       return res.status(404).json({ message: "页码超出范围" });
     }
-    const trips = await Trip.find({
-      userId: userId,
-      // userId: req.query.userId,
-      auditStatus:
-        req.params.status === "all" ? { $ne: null } : req.params.status,
-      isDeleted: false,
-    })
-      .sort({ createTime: -1 })
-      .skip(skip)
-      .limit(limit);
+
     res.status(200).json({ data: trips, total });
   } catch (error) {
+    console.log("getTripByStatus error:", error);
     return res.status(500).json({ message: error.message });
   }
 };
@@ -280,28 +341,64 @@ exports.getTripByAuditStatus = async (req, res) => {
     if (!["all", "pass", "reject", "wait"].includes(req.params.status)) {
       throw new Error("status参数不合法");
     }
-    // 分页查询
+    const status = req.params.status;
     const page = parseInt(req.query.pageNum) || 1;
     const limit = parseInt(req.query.pageSize) || 10;
     const skip = (page - 1) * limit;
 
+    const trips = await Trip.aggregate([
+      {
+        $match: {
+          auditStatus: status === "all" ? { $ne: null } : status,
+          isDeleted: false,
+        },
+      },
+      { $sort: { createTime: -1 } },
+      { $skip: skip },
+      { $limit: limit },
+      {
+        $addFields: {
+          userIdObjectId: { $toObjectId: "$userId" },
+        },
+      },
+      {
+        $lookup: {
+          from: "users", // 确保这是正确的集合名称
+          localField: "userIdObjectId",
+          foreignField: "_id",
+          as: "userInfo",
+        },
+      },
+      {
+        $unwind: {
+          path: "$userInfo",
+          preserveNullAndEmptyArrays: true,
+        },
+      },
+      {
+        $addFields: {
+          username: "$userInfo.username",
+          avatar: "$userInfo.avatar",
+        },
+      },
+      {
+        $project: {
+          userInfo: 0,
+          userIdObjectId: 0, // 移除辅助字段
+        },
+      },
+    ]);
+
     const total = await Trip.countDocuments({
-      auditStatus:
-        req.params.status === "all" ? { $ne: null } : req.params.status,
+      auditStatus: status === "all" ? { $ne: null } : status,
       isDeleted: false,
     });
+
     if (skip >= total && total !== 0) {
       return res.status(404).json({ message: "页码超出范围" });
     }
-    const trips = await Trip.find({
-      auditStatus:
-        req.params.status === "all" ? { $ne: null } : req.params.status,
-      isDeleted: false,
-    })
-      .sort({ createTime: -1 })
-      .skip(skip)
-      .limit(limit);
-    res.status(200).json({ data: trips });
+
+    res.status(200).json({ data: trips, total });
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }
