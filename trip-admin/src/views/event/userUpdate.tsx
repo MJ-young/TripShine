@@ -24,7 +24,7 @@ const UserUpdate = () => {
 
   return (
     <>
-      {/* <div>{travelogue && <div>最新旅游日记审核状态：{travelogue}</div>}</div> */}
+      <div>{travelogue && <div>最新旅游日记审核状态：{travelogue}</div>}</div>
     </>
   );
 };
